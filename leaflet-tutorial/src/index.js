@@ -17,9 +17,7 @@ const createDiv = divId => {
     return div;
 };
 
-const app = createDiv('app');
-document.body.appendChild(app);
-app.appendChild(createDiv(id));
+document.body.appendChild(createDiv(id));
 
 const mymap = L.map(id).setView([x, y], zoomLevel);
 
