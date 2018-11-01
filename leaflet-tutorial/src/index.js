@@ -1,6 +1,8 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+import './Leaflet.CitySelect';
+
 import './index.css';
 
 const id = 'mapid';
@@ -29,3 +31,6 @@ L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(mymap);
 
 const marker = L.marker([51.5, -0.09]).addTo(mymap);
+
+const cities = L.citySelect();
+cities.addTo(mymap);
