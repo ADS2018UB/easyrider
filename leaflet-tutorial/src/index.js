@@ -30,7 +30,23 @@ L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken
 }).addTo(mymap);
 
-const marker = L.marker([51.5, -0.09]).addTo(mymap);
-
 const cities = L.citySelect();
 cities.addTo(mymap);
+
+const cityCoords = {
+    'London': {x: 51.505, y: -0.09, z: 13},
+    'New York': {x: 40.730, y: -73.935, z: 13},
+    'Chicago': {x: 41.881, y: -87.623, z: 13}
+};
+
+const loadCity = city => {
+    const coords = cityCoords[city];
+    mymap.setView([coords.x, coords.y], coords.z);
+}
+
+const cityCallback = e => {
+    const city = e.feature;
+    loadCity(city);
+};
+
+cities.on('change', cityCallback);
