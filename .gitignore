@@ -1,0 +1,9 @@
+# don't upload certain datasets
+notebooks/datasets/Divvy_Bicycle_Stations_-_Historical.csv
+notebooks/datasets/chicago.csv
+
+# jupyter
+notebooks/.ipynb_checkpoints
+
+# vscode
+.vscode
