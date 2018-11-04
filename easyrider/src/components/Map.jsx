@@ -1,7 +1,7 @@
 import React from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import Papa from "papaparse";
+import _ from "lodash";
 
 // Fixing markers location (webpack)
 delete L.Icon.Default.prototype._getIconUrl;
@@ -13,19 +13,7 @@ L.Icon.Default.mergeOptions({
 
 class Map extends React.Component {
   componentWillMount() {
-    const path = require(`../data/chicago_stations.csv`);
-    console.log(path);
-    Papa.parse(path, {
-      header: true,
-      download: true,
-      delimiter: ",",
-      // skipEmptyLines: true,
-      complete: this.updateData
-    });
-  }
-
-  updateData(result) {
-    this.stations = result.data;
+    this.stations = require(`../data/chicago_stations.csv`);
   }
 
   componentDidMount() {
@@ -36,9 +24,15 @@ class Map extends React.Component {
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
 
-    this.marker = L.marker(this.props.pos).addTo(this.map);
-
     console.log(this.stations);
+    this.station_markers = _.map(this.stations, station => {
+      const marker = L.marker([station.lat, station.lon]).addTo(this.map);
+      const tooltip_content = `Id: <b>${station.id}</b><br/>Name: <b>${
+        station.station_name
+      }</b>`;
+      marker.bindPopup(tooltip_content);
+      return marker;
+    });
   }
 
   render() {
