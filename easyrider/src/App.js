@@ -1,13 +1,22 @@
 import React, { Component } from "react";
-import Map from "./components/Map";
+import { Provider, Subscribe } from "unstated";
+// eslint-disable-next-line no-unused-vars
+import UNSTATED from "unstated-debug";
+import Map, { MapContainer } from "./components/Map";
 import "./App.css";
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Map id="map" pos={[41.881, -87.623]} zoom={13} />
-      </div>
+      <Provider>
+        <Subscribe to={[MapContainer]}>
+          {mapStore => (
+            <div className="App">
+              <Map id="map" mapStore={mapStore} />
+            </div>
+          )}
+        </Subscribe>
+      </Provider>
     );
   }
 }
