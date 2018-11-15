@@ -82,10 +82,10 @@ class Map extends React.Component {
           this.map
         );
         const tooltip_content = `Id: <b>${station.id}</b><br/>Name: <b>${
-          station.station_name
-        }</b><br/>Available: <b>${station.current_bikes}</b><br/>Capacity: <b>${
-          station.capacity
-        }</b>`;
+          station.name
+        }</b><br/>Available: <b>${
+          station.current_bikes
+        }</b><br/>Empty: <b>${station.capacity - station.current_bikes}</b>`;
         marker.bindPopup(tooltip_content);
         return marker;
       });
