@@ -5,7 +5,6 @@ import "leaflet/dist/leaflet.css";
 import _ from "lodash";
 
 import { API_URL } from "../constants";
-import { randInt } from "../utils";
 
 // Fixing markers location (webpack)
 delete L.Icon.Default.prototype._getIconUrl;
