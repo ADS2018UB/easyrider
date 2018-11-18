@@ -14,34 +14,43 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png")
 });
 
-const okIcon = L.icon({
-  iconUrl: "pin_blue.png",
-  // shadowUrl: 'leaf-shadow.png',
+/**
+ * Builds a Leaflet icon object for the current station icons in the
+ * public directory.
+ * @param {string} iconUrl Url for the icon.
+ */
+const createIcon = iconUrl =>
+  L.icon({
+    iconUrl,
+    iconSize: [32, 32], // size of the icon
+    iconAnchor: [16, 32], // point of the icon which will correspond to marker's location
+    popupAnchor: [0, -24] // point from which the popup should open relative to the iconAnchor
+  });
 
-  iconSize: [64, 64], // size of the icon
-  // shadowSize: [50, 64], // size of the shadow
-  iconAnchor: [32, 64], // point of the icon which will correspond to marker's location
-  // shadowAnchor: [4, 62], // the same for the shadow
-  popupAnchor: [0, -48] // point from which the popup should open relative to the iconAnchor
-});
+const okIcon = createIcon("pin_white.png");
+const warnIcon = createIcon("pin_yellow.png");
+const koIcon = createIcon("pin_red.png");
 
-const koIcon = L.icon({
-  iconUrl: "pin_red.png",
-  // shadowUrl: 'leaf-shadow.png',
-
-  iconSize: [64, 64], // size of the icon
-  // shadowSize: [50, 64], // size of the shadow
-  iconAnchor: [32, 64], // point of the icon which will correspond to marker's location
-  // shadowAnchor: [4, 62], // the same for the shadow
-  popupAnchor: [0, -48] // point from which the popup should open relative to the iconAnchor
-});
-
+/**
+ * Provides an icon given the proportion of available docks.
+ * @param {int} current The current amount of occupied docks.
+ * @param {int} total The total amount of docks.
+ */
 const selectIcon = (current, total) => {
   const q = parseFloat(current) / parseFloat(total);
   console.log(current, total, q);
-  return q <= 0.2 ? koIcon : okIcon;
+  if (current === 0) {
+    return koIcon;
+  } else if (q <= 0.2) {
+    return warnIcon;
+  } else {
+    return okIcon;
+  }
 };
 
+/**
+ * State container for the Map visualization.
+ */
 export class MapContainer extends Container {
   state = {
     stations: [],
@@ -54,7 +63,14 @@ export class MapContainer extends Container {
   };
 }
 
+/**
+ * Map visualization component.
+ */
 class Map extends React.Component {
+  /**
+   * Creates the Leaflet map object.
+   * @param {MapContainer} mapStore State store given by the parent component.
+   */
   createMap = mapStore => {
     this.map = L.map(this.props.id).setView(
       [mapStore.position.x, mapStore.position.y],
@@ -66,6 +82,11 @@ class Map extends React.Component {
     }).addTo(this.map);
   };
 
+  /**
+   * Adds the stations to the map.
+   * Stations are given by the API.
+   * @param {MapContainer} mapStore State store given by the parent component.
+   */
   addStations = async mapStore => {
     try {
       // Fetching stations.
@@ -94,6 +115,9 @@ class Map extends React.Component {
     }
   };
 
+  /**
+   * Creates the map and adds the stations once the component is mounted.
+   */
   async componentDidMount() {
     const mapStore = this.props.mapStore.state;
     // Create map
