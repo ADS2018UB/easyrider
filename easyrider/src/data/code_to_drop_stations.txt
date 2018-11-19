@@ -1,0 +1,25 @@
+import pandas as pd
+columns=['id', 'ts', 'total_docks', 'docks_in_service',
+         'available_docks', 'available_bikes', 'percent_full']
+df=pd.read_csv('chicago_docks.csv',usecols=[0,1,4,5,6,7,8],names=columns)
+
+#Code to drop stations
+
+df['ts']=pd.to_datetime(df['ts'],format="%m/%d/%Y %I:%M:%S %p")
+
+df=df[~(df['ts'] > '2018-09-01 00:00:00') & ~('2018-01-31 00:00:00'< df['ts'])]
+
+
+#Code to drop stations (I used this webpage where we downloaded our main data set from: https://data.cityofchicago.org/Transportation/Divvy-Bicycle-Stations-Historical/eq45-8inv/data. I applied filters and functions there and this is how i received the list of stations)
+
+l=[621,626,627,628,630,631,635,636,637,638,639,640,641,643,644,646,647,
+   648,649,650,651,652,654,655,656,657,658,659,660,360,606,607,608,609,610,611,612,613,614,615,616,617,618]
+
+df=df.drop(df[df.id.isin(l)].index)
+
+
+
+
+#print(df.head())
+#m=df['ts'].dtypes
+#print(m)
