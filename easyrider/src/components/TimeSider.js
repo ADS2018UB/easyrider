@@ -36,7 +36,7 @@ class TimeSider extends Component {
           <TimePicker
             id="hour"
             value={this.state.hour}
-            minuteStep={5}
+            minuteStep={this.props.step}
             format={format}
             onChange={this.onChangeHour.bind(this)}
           />

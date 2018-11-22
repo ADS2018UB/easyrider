@@ -22,16 +22,20 @@ class Timeline extends Component {
 
   formatter(value) {
     const { day, hour } = this.state;
-    const diff = 5 * (value - 50);
+    const diff = this.props.step * (value - 50);
 
     return diff;
   }
 
   render() {
+    const limit = 50 - 240 / this.props.step;
+    console.log(limit);
     return (
       <div id="hour_slider">
         <Slider
           defaultValue={50}
+          min={limit}
+          max={100 - limit}
           tipFormatter={this.formatter.bind(this)}
           onChange={this.onChange.bind(this)}
           onAfterChange={this.onAfterChange.bind(this)}

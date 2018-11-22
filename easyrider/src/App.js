@@ -14,6 +14,8 @@ const { Header, Footer, Sider, Content } = Layout;
 
 class App extends Component {
   render() {
+    const minuteStep = 5;
+
     return (
       <div className="App">
         <Provider>
@@ -25,11 +27,11 @@ class App extends Component {
                     <Map id="map" mapStore={mapStore} />
                   </Content>
                   <Footer>
-                    <Timeline />
+                    <Timeline step={minuteStep} />
                   </Footer>
                 </Layout>
                 <Sider width="300" theme="light">
-                  <TimeSider />
+                  <TimeSider step={minuteStep} />
                 </Sider>
               </Layout>
             )}
