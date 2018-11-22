@@ -5,8 +5,6 @@ import moment from "moment";
 import { API_URL } from "../constants";
 import "./time.css";
 
-const format = "HH:mm";
-
 class TimeSider extends Component {
   disabledDate(current) {
     return current > moment();
@@ -14,21 +12,29 @@ class TimeSider extends Component {
 
   today(ev) {
     this.props.onChangeDate(moment());
-    this.props.onChangeHour(null);
+  }
+
+  onChangeHour(hour) {
+    const { date } = this.props;
+    if (!date) {
+      this.props.onChangeDate(hour);
+    } else {
+      date.hour(hour.hour()).minute(hour.minute());
+    }
   }
 
   render() {
-    const { step, hour, date } = this.props;
+    const { step, date } = this.props;
     return (
       <div id="time_select">
         <div className="sider_control">
           Specific Date:
           <TimePicker
             id="hour"
-            value={hour}
+            value={date}
             minuteStep={step}
-            format={format}
-            onChange={this.props.onChangeHour}
+            format="HH:mm"
+            onChange={this.onChangeHour.bind(this)}
           />
         </div>
         <div className="sider_control">
@@ -36,7 +42,7 @@ class TimeSider extends Component {
             Today
           </Button>
           <DatePicker
-            id="day"
+            id="date"
             value={date}
             disabledDate={this.disabledDate}
             onChange={this.props.onChangeDate}

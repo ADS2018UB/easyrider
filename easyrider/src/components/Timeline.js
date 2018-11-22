@@ -7,15 +7,11 @@ import "./time.css";
 
 class Timeline extends Component {
   formatter(value) {
-    const { hour, date } = this.props;
+    const { date } = this.props;
 
     const diff = this.props.step * (value - 50);
-
-    const sliderDate = date ? date : moment();
-    const sliderHour = hour ? hour.hour() : moment().hour();
-    const sliderMinutes = hour ? hour.minute() : moment().minute();
-
-    sliderDate.hour(sliderHour).minute(sliderMinutes + diff);
+    const sliderDate = date ? moment(date) : moment();
+    sliderDate.add("m", diff);
 
     return sliderDate.format("DD/MM/YYYY HH:mm");
   }
