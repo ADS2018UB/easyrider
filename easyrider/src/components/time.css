@@ -4,10 +4,12 @@
 	margin: 10px;
 	position: absolute;
 	bottom: 0;
+	width: 90%;
 }
 
 .sider_control {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  align-items: center;
 }

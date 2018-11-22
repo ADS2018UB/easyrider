@@ -33,11 +33,6 @@ class TimeSider extends Component {
       <div id="time_select">
         <div className="sider_control">
           Specific Date:
-          <Button type="primary" size="small" onClick={this.today.bind(this)}>
-            Today
-          </Button>
-        </div>
-        <div>
           <TimePicker
             id="hour"
             value={this.state.hour}
@@ -45,6 +40,11 @@ class TimeSider extends Component {
             format={format}
             onChange={this.onChangeHour.bind(this)}
           />
+        </div>
+        <div className="sider_control">
+          <Button type="primary" size="small" onClick={this.today.bind(this)}>
+            Today
+          </Button>
           <DatePicker
             id="day"
             value={this.state.day}
