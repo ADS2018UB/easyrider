@@ -9,3 +9,6 @@ notebooks/.ipynb_checkpoints
 
 # vscode
 .vscode
+
+# osx
+.DS_Store
