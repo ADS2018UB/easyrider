@@ -13,8 +13,20 @@ import "./App.css";
 const { Header, Footer, Sider, Content } = Layout;
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { date: null, hour: null, sliderNum: 50 };
+  }
+
   render() {
+    const { date, hour, sliderNum } = this.state;
     const minuteStep = 5;
+
+    const onChangeDate = date => this.setState({ date });
+    const onChangeHour = hour => this.setState({ hour });
+
+    const onChangeSlider = value => this.setState({ sliderNum: value });
+    const onAfterChangeSlider = value => this.setState({ sliderNum: value });
 
     return (
       <div className="App">
@@ -27,11 +39,22 @@ class App extends Component {
                     <Map id="map" mapStore={mapStore} />
                   </Content>
                   <Footer>
-                    <Timeline step={minuteStep} />
+                    <Timeline
+                      step={minuteStep}
+                      sliderNum={sliderNum}
+                      onChange={onChangeSlider}
+                      onAfterChange={onAfterChangeSlider}
+                    />
                   </Footer>
                 </Layout>
                 <Sider width="300" theme="light">
-                  <TimeSider step={minuteStep} />
+                  <TimeSider
+                    step={minuteStep}
+                    hour={hour}
+                    date={date}
+                    onChangeDate={onChangeDate}
+                    onChangeHour={onChangeHour}
+                  />
                 </Sider>
               </Layout>
             )}

@@ -3,25 +3,12 @@ import { Slider } from "antd";
 import moment from "moment";
 
 import { API_URL } from "../constants";
+import "./time.css";
 
 const format = "HH:mm";
 
 class Timeline extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { day: null, hour: null };
-  }
-
-  onChange(value) {
-    console.log("onChange: ", value);
-  }
-
-  onAfterChange(value) {
-    console.log("onAfterChange: ", value);
-  }
-
   formatter(value) {
-    const { day, hour } = this.state;
     const diff = this.props.step * (value - 50);
 
     return diff;
@@ -29,16 +16,16 @@ class Timeline extends Component {
 
   render() {
     const limit = 50 - 240 / this.props.step;
-    console.log(limit);
     return (
-      <div id="hour_slider">
+      <div>
         <Slider
-          defaultValue={50}
+          id="time_slider"
+          value={this.props.sliderNum}
           min={limit}
           max={100 - limit}
           tipFormatter={this.formatter.bind(this)}
-          onChange={this.onChange.bind(this)}
-          onAfterChange={this.onAfterChange.bind(this)}
+          onChange={this.props.onChange}
+          onAfterChange={this.props.onAfterChange}
         />
       </div>
     );
