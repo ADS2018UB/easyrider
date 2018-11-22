@@ -5,13 +5,17 @@ class StationsController < ApplicationController
   # GET /stations
   def index
     @stations = Station.all
-
-    render json: @stations
+    # todo: get current state for each station for given date parameter
+    @stations.each do |station|
+      station['current_bikes'] = rand * station['capacity']
+    end
+    render json: @stations.as_json(except: [:created_at, :updated_at])
   end
 
   # GET /stations/1
   def show
-    render json: @station
+    @station['current_bikes'] = rand * @station['capacity']
+    render json: @station.as_json(except: [:created_at, :updated_at])
   end
 
   # # POST /stations

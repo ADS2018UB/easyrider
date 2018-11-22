@@ -13,5 +13,5 @@ CSV.foreach("chicago_stations.csv", headers: true) do |row|
   # row[2] ... name
   # row[4] ... lat
   # row[5] ... lng
-  Station.create!(id: row[1], name: row[2], lat: row[4], lng: row[5])
+  Station.create!(id: row[1], name: row[2], lat: row[4], lng: row[5], capacity: rand(10..50))
 end
