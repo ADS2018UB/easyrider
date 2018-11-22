@@ -6,6 +6,7 @@ import { Layout } from "antd";
 import UNSTATED from "unstated-debug";
 
 import Map, { MapContainer } from "./components/Map";
+import TimeSider from "./components/TimeSider";
 import "./App.css";
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -25,7 +26,7 @@ class App extends Component {
                   <Footer>Timeline selector</Footer>
                 </Layout>
                 <Sider width="300" theme="light">
-                  Menu
+                  <TimeSider />
                 </Sider>
               </Layout>
             )}

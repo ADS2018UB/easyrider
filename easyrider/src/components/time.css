@@ -1,0 +1,13 @@
+@import "~antd/dist/antd.css";
+
+#time_select {
+	margin: 10px;
+	position: absolute;
+	bottom: 0;
+}
+
+.sider_control {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
