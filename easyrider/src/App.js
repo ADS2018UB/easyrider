@@ -7,6 +7,7 @@ import UNSTATED from "unstated-debug";
 
 import Map, { MapContainer } from "./components/Map";
 import TimeSider from "./components/TimeSider";
+import Timeline from "./components/Timeline";
 import "./App.css";
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -23,7 +24,9 @@ class App extends Component {
                   <Content className="full">
                     <Map id="map" mapStore={mapStore} />
                   </Content>
-                  <Footer>Timeline selector</Footer>
+                  <Footer>
+                    <Timeline />
+                  </Footer>
                 </Layout>
                 <Sider width="300" theme="light">
                   <TimeSider />
