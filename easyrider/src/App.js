@@ -41,6 +41,8 @@ class App extends Component {
                   <Footer>
                     <Timeline
                       step={minuteStep}
+                      hour={hour}
+                      date={date}
                       sliderNum={sliderNum}
                       onChange={onChangeSlider}
                       onAfterChange={onAfterChangeSlider}

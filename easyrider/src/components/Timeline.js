@@ -5,13 +5,19 @@ import moment from "moment";
 import { API_URL } from "../constants";
 import "./time.css";
 
-const format = "HH:mm";
-
 class Timeline extends Component {
   formatter(value) {
+    const { hour, date } = this.props;
+
     const diff = this.props.step * (value - 50);
 
-    return diff;
+    const sliderDate = date ? date : moment();
+    const sliderHour = hour ? hour.hour() : moment().hour();
+    const sliderMinutes = hour ? hour.minute() : moment().minute();
+
+    sliderDate.hour(sliderHour).minute(sliderMinutes + diff);
+
+    return sliderDate.format("DD/MM/YYYY HH:mm");
   }
 
   render() {
