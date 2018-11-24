@@ -12,3 +12,7 @@ notebooks/.ipynb_checkpoints
 
 # osx
 .DS_Store
+
+# python
+__pycache__
+*.pyc
