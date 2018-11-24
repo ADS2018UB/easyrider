@@ -8,6 +8,11 @@ from sklearn.preprocessing import LabelEncoder
 from skopt import BayesSearchCV
 from sklearn.model_selection import StratifiedKFold
 
+
+class BayesSearchCV(BayesSearchCV):
+    def _run_search(self, x): raise BaseException('Use newer skopt')
+
+
 xs_features = ['total_docks', 'docks_in_service', 'status', 'ab_daily_mean', 'ab_monthly_mean', 'ab_weekly_mean',
                'ab_daily_median', 'ab_monthly_median', 'ab_weekly_median', 'hour_x', 'hour_y',
                'month', 'quarter', 'day', 'hour', 'quarter_hour', 'dow', 'week', 'last_1w_hourly_mean',
