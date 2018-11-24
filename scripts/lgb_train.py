@@ -1,10 +1,12 @@
 if __name__ == '__main__':
     import argparse
 
-    # Parsing arguments
+    # Parsing arguments.
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input-folder', type=str, required=True,
                         help='Folder that contains the splitted stations CSV files.')
+    parser.add_argument('-o', '--output-folder', type=str, required=True,
+                        help='Folder that will contain the results of the processing.')
     args = parser.parse_args()
 
     import os
@@ -19,21 +21,16 @@ if __name__ == '__main__':
 
     DF_FILES = ''
 
-    def data_file(index, station):
-        station = station.replace('/', '_')
-        return DF_FILES.format(index, station)
-
     DF_FILES = args.input_folder
-    logging.info(DF_FILES)
 
     # For each station name...
     name_it = glob.glob(os.path.join(DF_FILES, '*.csv'))
     for dfpath in tqdm(name_it):
         logging.info(f'Processing {dfpath}')
-        # Load the sub-dataset
+        # Load the sub-dataset.
         df = pd.read_csv(dfpath, parse_dates=[2], header=0)
 
-        # Preprocessing
+        # Preprocessing.
         logging.info('Rounding timestamps.')
         df = lgb.round_ts(df)
         logging.info('Resampling.')
@@ -46,6 +43,12 @@ if __name__ == '__main__':
         rmse, model, prediction = lgb.optimize(
             train, test, lgb.features, lgb.target, iters=10)
 
-        # Store the model and the results
-        out_id = os.path.splitext(os.path.basename(dfpath))[0]
-        logging.info(out_id)
+        # Appending the predictions.
+        test.loc[:, 'prediction'] = prediction
+
+        # Store the model and the results.
+        out_file = os.path.basename(dfpath)
+        out_path = os.path.join(args.output_folder, out_file)
+        test.to_csv(out_path)
+
+    logging.info('Done.')

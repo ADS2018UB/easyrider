@@ -25,5 +25,8 @@ ls path/to/my/folder
 To run the program:
 
 ```bash
-python lgb_train.py -i path/to/my/folder
+python lgb_train.py -i path/to/my/folder \
+                    -o path/to/my/output/folder
 ```
+
+At the end of the processing, the output folder will contain a set of `csv` files with the predictions.
