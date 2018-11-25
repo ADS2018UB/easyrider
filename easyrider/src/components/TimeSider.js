@@ -7,7 +7,7 @@ import "./time.css";
 
 class TimeSider extends Component {
   disabledDate(current) {
-    return current > moment();
+    return current < moment("2018-09-17") || current > moment("2018-10-14");
   }
 
   today(ev) {
