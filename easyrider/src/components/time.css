@@ -9,9 +9,19 @@
 
 .sider_control {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-bottom: 5px;
   align-items: center;
+}
+
+#restartButton {
+	margin: 0px 5px;
+}
+
+.sider_input {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
 }
 
 .ant-slider-rail {

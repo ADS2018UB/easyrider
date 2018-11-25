@@ -47,12 +47,8 @@ class App extends Component {
                     />
                   </Footer>
                 </Layout>
-                <Sider width="300" theme="light">
-                  <TimeSider
-                    step={minuteStep}
-                    date={date}
-                    onChangeDate={onChangeDate}
-                  />
+                <Sider width="225" theme="light">
+                  <TimeSider date={date} onChangeDate={onChangeDate} />
                 </Sider>
               </Layout>
             )}
