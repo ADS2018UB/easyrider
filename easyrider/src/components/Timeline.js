@@ -4,7 +4,7 @@ import { Slider } from "antd";
 import "./time.css";
 
 class Timeline extends Component {
-  formatter(value) {
+  formatter = value => {
     let res = value % 60;
     const minute = res === 0 ? "00" : res;
 
@@ -12,21 +12,35 @@ class Timeline extends Component {
     const hour = res === 0 ? "00" : res;
 
     return hour + ":" + minute;
-  }
+  };
+
+  onAfterChange = value => {
+    const { date } = this.props.mapStore.state;
+
+    const minute = value % 60;
+    const hour = (value - minute) / 60;
+
+    this.props.mapStore.setDate(date.hour(hour).minute(minute));
+
+    //TODO: call here the endpoint to update the map
+  };
 
   render() {
+    const { date } = this.props.mapStore.state;
+
+    const minuteStep = 10;
+    const defSliderNum = 60 * date.hour() + date.minute();
+
     return (
       <div>
         <Slider
           id="time_slider"
           included={false}
-          step={this.props.step}
-          disabled={this.props.date == null}
-          value={this.props.sliderNum}
+          step={minuteStep}
+          defaultValue={defSliderNum}
           tipFormatter={this.formatter}
           max={1430}
-          onChange={this.props.onChange}
-          onAfterChange={this.props.onAfterChange}
+          onAfterChange={this.onAfterChange.bind(this)}
         />
       </div>
     );

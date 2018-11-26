@@ -3,6 +3,7 @@ import { Container } from "unstated";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import _ from "lodash";
+import moment from "moment";
 
 import { API_URL } from "../constants";
 
@@ -55,11 +56,21 @@ export class MapContainer extends Container {
   state = {
     stations: [],
     position: { x: 41.881, y: -87.623, z: 13 },
-    isFetching: false
+    isFetching: false,
+    date: moment("2018-10-01 12:00")
   };
 
   setStations = stations => {
     this.setState({ ...this.state, stations });
+  };
+
+  startDate = () => {
+    this.setState({ date: moment("2018-10-01 12:00") });
+  };
+
+  setDate = date => {
+    date.minute(((date.minute() / 10) >> 0) * 10);
+    this.setState({ ...this.state, date });
   };
 }
 
@@ -90,7 +101,7 @@ class Map extends React.Component {
   addStations = async mapStore => {
     try {
       // Fetching stations.
-      const data = await fetch(`${API_URL}/stations/?date=2018-01-02T12:00`);
+      const data = await fetch(`${API_URL}/stations/?date=2018-10-01T12:00`);
       const stations = await data.json();
 
       // Updating the state.

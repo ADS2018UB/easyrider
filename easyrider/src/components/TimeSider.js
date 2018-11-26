@@ -9,19 +9,17 @@ class TimeSider extends Component {
     return current < moment("2018-09-17") || current > moment("2018-10-15");
   }
 
-  restart() {
-    this.props.onChangeDate(moment("2018-10-01 12:00"));
-  }
-
-  setDate(day) {
-    const newDate = this.props.date.add(day, "d");
+  addDay(num) {
+    const newDate = moment(this.props.mapStore.state.date).add(num, "d");
     if (!this.disabledDate(newDate)) {
-      this.props.onChangeDate(newDate);
+      this.props.mapStore.setDate(newDate);
     }
   }
 
   render() {
-    const { date } = this.props;
+    const { date } = this.props.mapStore.state;
+    const { startDate, setDate } = this.props.mapStore;
+
     return (
       <div id="time_select">
         <div className="sider_control">
@@ -30,14 +28,13 @@ class TimeSider extends Component {
             size="small"
             shape="circle"
             icon="left"
-            onClick={this.setDate.bind(this, -1)}
-            disabled={date === null}
+            onClick={this.addDay.bind(this, -1)}
           />
           <Button
             id="restartButton"
             type="primary"
             size="small"
-            onClick={this.restart.bind(this)}
+            onClick={startDate}
           >
             Restart
           </Button>
@@ -46,8 +43,7 @@ class TimeSider extends Component {
             size="small"
             shape="circle"
             icon="right"
-            onClick={this.setDate.bind(this, 1)}
-            disabled={date === null}
+            onClick={this.addDay.bind(this, 1)}
           />
         </div>
         <div className="sider_input">
@@ -55,7 +51,7 @@ class TimeSider extends Component {
             id="date"
             value={date}
             disabledDate={this.disabledDate}
-            onChange={this.props.onChangeDate}
+            onChange={setDate}
           />
         </div>
       </div>
