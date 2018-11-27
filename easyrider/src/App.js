@@ -5,7 +5,8 @@ import { Layout } from "antd";
 // eslint-disable-next-line no-unused-vars
 import UNSTATED from "unstated-debug";
 
-import Map, { MapContainer } from "./components/Map";
+import Map from "./components/Map";
+import MapContainer from "./containers/MapContainer";
 import TimeSider from "./components/TimeSider";
 import Timeline from "./components/Timeline";
 import "./App.css";

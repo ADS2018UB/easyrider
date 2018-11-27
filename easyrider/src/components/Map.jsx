@@ -3,7 +3,6 @@ import { Container } from "unstated";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import _ from "lodash";
-import moment from "moment";
 
 import { API_URL } from "../constants";
 
@@ -39,7 +38,7 @@ const koIcon = createIcon("pin_red.png");
  */
 const selectIcon = (current, total) => {
   const q = parseFloat(current) / parseFloat(total);
-  console.log(current, total, q);
+  // console.log(current, total, q);
   if (current === 0) {
     return koIcon;
   } else if (q <= 0.2) {
@@ -48,31 +47,6 @@ const selectIcon = (current, total) => {
     return okIcon;
   }
 };
-
-/**
- * State container for the Map visualization.
- */
-export class MapContainer extends Container {
-  state = {
-    stations: [],
-    position: { x: 41.881, y: -87.623, z: 13 },
-    isFetching: false,
-    date: moment("2018-10-01 12:00")
-  };
-
-  setStations = stations => {
-    this.setState({ ...this.state, stations });
-  };
-
-  startDate = () => {
-    this.setState({ date: moment("2018-10-01 12:00") });
-  };
-
-  setDate = date => {
-    date.minute(((date.minute() / 10) >> 0) * 10);
-    this.setState({ ...this.state, date });
-  };
-}
 
 /**
  * Map visualization component.
@@ -139,6 +113,14 @@ class Map extends React.Component {
     // _.forEach(this.station_markers, marker => {
     //   this.map.removeLayer(marker);
     // });
+
+    // Events
+    this.map.on("moveend", ev => {
+      // console.log(this.props.mapStore);
+      const newPos = ev.target.getCenter();
+      console.log("Map moved to:", newPos);
+      this.props.mapStore.setPos(newPos);
+    });
   }
 
   render() {
