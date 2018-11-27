@@ -25,12 +25,11 @@ export default class MapContainer extends Container {
     this.setState({ ...this.state, date });
   };
 
-  setPos = pos => {
-    console.log(pos);
+  setPos = (pos, zoom) => {
     const newPos = {
       x: pos.lat || this.state.position.x,
       y: pos.lng || this.state.position.y,
-      z: pos.zoom || this.state.position.z
+      z: zoom || this.state.position.z
     };
     this.setState({ ...this.state, position: newPos });
   };

@@ -11,7 +11,7 @@ import TimeSider from "./components/TimeSider";
 import Timeline from "./components/Timeline";
 import "./App.css";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Footer, Sider, Content } = Layout;
 
 class App extends Component {
   render() {

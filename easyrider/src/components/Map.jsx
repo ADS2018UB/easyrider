@@ -1,5 +1,4 @@
 import React from "react";
-import { Container } from "unstated";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import _ from "lodash";
@@ -118,10 +117,19 @@ class Map extends React.Component {
     this.map.on("moveend", ev => {
       // console.log(this.props.mapStore);
       const newPos = ev.target.getCenter();
-      console.log("Map moved to:", newPos);
-      this.props.mapStore.setPos(newPos);
+      const zoom = ev.target.getZoom();
+      this.props.mapStore.setPos(newPos, zoom);
     });
   }
+
+  /**
+   * Updates map position given the position in the state.
+   * Needs to be manually called.
+   */
+  setPos = () => {
+    const state = this.props.mapStore.state;
+    this.map.setView([state.position.x, state.position.y], state.position.z);
+  };
 
   render() {
     // const mapStore = this.props.mapStore;
