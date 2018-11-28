@@ -74,10 +74,29 @@ class Map extends React.Component {
     _.forEach(this.stationMarkers, m => this.map.removeLayer(m));
 
   /**
+   * Creates the tooltip content of an specific station.
+   * @param {station} station whose tooltip is going to be generated.
+   */
+  getTooltipContent = (station, date) => {
+    return `Adress: <b>${station.name}</b>
+      <br />
+      ID: <b>${station.id}</b>
+      <br />
+      Available: <b>${station.current_bikes}</b>
+      <br />
+      Empty: <b>${station.capacity - station.current_bikes}</b>
+      <br /><br /><br />
+      <b>PLAN YOUR TRIP</b>
+      <hr />
+      Date: <b>${date.format("DD-MM-YYYY HH:mm")}</b>
+      <br />
+      Week day: <b>${date.format("dddd")}</b>`;
+  };
+  /**
    * Updates the station information given a ser of station data objects.
    * @param {list of station objects} stations List of the station objects returned by the backend.
    */
-  updateStations = stations => {
+  updateStations = (stations, date) => {
     // First, remove all the current markers.
     this.removeAllStations();
     // Setting the station markers and the tooltips.
@@ -88,12 +107,8 @@ class Map extends React.Component {
         const marker = L.marker([station.lat, station.lng], { icon }).addTo(
           this.map
         );
-        const tooltip_content = `Id: <b>${station.id}</b><br/>Name: <b>${
-          station.name
-        }</b><br/>Available: <b>${
-          station.current_bikes
-        }</b><br/>Empty: <b>${station.capacity - station.current_bikes}</b>`;
-        marker.bindPopup(tooltip_content);
+
+        marker.bindPopup(this.getTooltipContent(station, date));
         return marker;
       })
       .value();

@@ -33,7 +33,7 @@ export default class MapContainer extends Container {
     const data = await fetch(`${API_URL}/stations/?date=${this.state.date}`);
     const stations = await data.json();
     // In callback, isFeching should be set to false.
-    this.map.updateStations(stations);
+    this.map.updateStations(stations, this.state.date);
     this.setState({ ...this.state, stations, isFetching: false });
   };
 

@@ -7,6 +7,8 @@ class Searchbar extends Component {
   onSelect(value) {
     console.log("onSelect", value);
     this.props.mapStore.centerStation(value);
+
+    return value;
   }
 
   filterOptions(input, option) {
