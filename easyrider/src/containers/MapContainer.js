@@ -22,7 +22,8 @@ export default class MapContainer extends Container {
     date: moment("2018-10-01 12:00")
   };
 
-  findStation = id => _.find(this.state.stations, s => s.id === id);
+  findStation = id =>
+    _.find(this.state.stations, s => parseInt(s.id) === parseInt(id));
 
   setStations = stations => this.setState({ ...this.state, stations });
 

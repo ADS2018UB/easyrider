@@ -6,6 +6,7 @@ const Option = AutoComplete.Option;
 class Searchbar extends Component {
   onSelect(value) {
     console.log("onSelect", value);
+    this.props.mapStore.centerStation(value);
   }
 
   filterOptions(input, option) {
