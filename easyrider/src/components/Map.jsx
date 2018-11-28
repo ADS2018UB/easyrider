@@ -51,14 +51,17 @@ const selectIcon = (current, total) => {
  * Map visualization component.
  */
 class Map extends React.Component {
+  stationMarkers = [];
+
   /**
    * Creates the Leaflet map object.
    * @param {MapContainer} mapStore State store given by the parent component.
    */
-  createMap = mapStore => {
+  createMap = () => {
+    const { state } = this.props.mapStore;
     this.map = L.map(this.props.id).setView(
-      [mapStore.position.x, mapStore.position.y],
-      mapStore.position.z
+      [state.position.x, state.position.y],
+      state.position.z
     );
     L.tileLayer(`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`, {
       attribution:
@@ -67,11 +70,42 @@ class Map extends React.Component {
   };
 
   /**
+   * Removes all the current station markers from the map, if there's any.
+   */
+  removeAllStations = () =>
+    _.forEach(this.stationMarkers, m => this.map.removeLayer(m));
+
+  /**
+   * Updates the station information given a ser of station data objects.
+   * @param {list of station objects} stations List of the station objects returned by the backend.
+   */
+  updateStations = stations => {
+    // First, remove all the current markers.
+    this.removeAllStations();
+    // Setting the station markers and the tooltips.
+    this.stationMarkers = _.map(stations, station => {
+      const icon = selectIcon(station.current_bikes, station.capacity);
+      const marker = L.marker([station.lat, station.lng], { icon }).addTo(
+        this.map
+      );
+      const tooltip_content = `Id: <b>${station.id}</b><br/>Name: <b>${
+        station.name
+      }</b><br/>Available: <b>${
+        station.current_bikes
+      }</b><br/>Empty: <b>${station.capacity - station.current_bikes}</b>`;
+      marker.bindPopup(tooltip_content);
+      return marker;
+    });
+  };
+
+  /**
    * Adds the stations to the map.
    * Stations are given by the API.
    * @param {MapContainer} mapStore State store given by the parent component.
    */
-  addStations = async mapStore => {
+  addStations = async () => {
+    const mapStore = this.props.mapStore;
+    const { state } = mapStore;
     try {
       // Fetching stations.
       const data = await fetch(`${API_URL}/stations/?date=2018-10-01T12:00`);
@@ -81,19 +115,7 @@ class Map extends React.Component {
       this.props.mapStore.setStations(stations);
 
       // Setting station markers.
-      this.station_markers = _.map(stations, station => {
-        const icon = selectIcon(station.current_bikes, station.capacity);
-        const marker = L.marker([station.lat, station.lng], { icon }).addTo(
-          this.map
-        );
-        const tooltip_content = `Id: <b>${station.id}</b><br/>Name: <b>${
-          station.name
-        }</b><br/>Available: <b>${
-          station.current_bikes
-        }</b><br/>Empty: <b>${station.capacity - station.current_bikes}</b>`;
-        marker.bindPopup(tooltip_content);
-        return marker;
-      });
+      this.updateStations(stations);
     } catch (error) {
       console.log("Error at loading the stations...\n", error);
     }
@@ -103,15 +125,11 @@ class Map extends React.Component {
    * Creates the map and adds the stations once the component is mounted.
    */
   async componentDidMount() {
-    const mapStore = this.props.mapStore.state;
+    this.props.mapStore.setMap(this);
     // Create map
-    this.createMap(mapStore);
+    this.createMap();
     // Creating and setting the markers
-    await this.addStations(mapStore);
-
-    // _.forEach(this.station_markers, marker => {
-    //   this.map.removeLayer(marker);
-    // });
+    await this.addStations();
 
     // Events
     this.map.on("moveend", ev => {
