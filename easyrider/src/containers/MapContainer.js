@@ -20,11 +20,9 @@ export default class MapContainer extends Container {
     date: moment("2018-10-01 12:00")
   };
 
-  setStations = stations => {
-    this.setState({ ...this.state, stations });
-  };
+  setStations = stations => this.setState({ ...this.state, stations });
 
-  startRequest = async time => {
+  startRequest = async () => {
     this.setState({ ...this.state, isFetching: true });
     // Send request to backend.
     const data = await fetch(`${API_URL}/stations/?date=${this.state.date}`);
@@ -42,6 +40,7 @@ export default class MapContainer extends Container {
   setDate = date => {
     date.minute(((date.minute() / 10) >> 0) * 10);
     this.setState({ ...this.state, date });
+    this.startRequest();
   };
 
   setPos = (pos, zoom) => {
