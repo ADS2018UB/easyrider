@@ -9,6 +9,8 @@ import Map from "./components/Map";
 import MapContainer from "./containers/MapContainer";
 import TimeSider from "./components/TimeSider";
 import Timeline from "./components/Timeline";
+import Searchbar from "./components/Searchbar";
+
 import "./App.css";
 
 const { Footer, Sider, Content } = Layout;
@@ -30,6 +32,7 @@ class App extends Component {
                   </Footer>
                 </Layout>
                 <Sider width="225" theme="light">
+                  <Searchbar mapStore={mapStore} />
                   <Spin spinning={mapStore.state.isFetching} />
                   <TimeSider mapStore={mapStore} />
                 </Sider>
