@@ -3,8 +3,6 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import _ from "lodash";
 
-import { API_URL } from "../constants";
-
 // Fixing markers location (webpack)
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -99,29 +97,6 @@ class Map extends React.Component {
   };
 
   /**
-   * Adds the stations to the map.
-   * Stations are given by the API.
-   * @param {MapContainer} mapStore State store given by the parent component.
-   */
-  addStations = async () => {
-    const mapStore = this.props.mapStore;
-    const { state } = mapStore;
-    try {
-      // Fetching stations.
-      const data = await fetch(`${API_URL}/stations/?date=2018-10-01T12:00`);
-      const stations = await data.json();
-
-      // Updating the state.
-      this.props.mapStore.setStations(stations);
-
-      // Setting station markers.
-      this.updateStations(stations);
-    } catch (error) {
-      console.log("Error at loading the stations...\n", error);
-    }
-  };
-
-  /**
    * Creates the map and adds the stations once the component is mounted.
    */
   async componentDidMount() {
@@ -129,7 +104,7 @@ class Map extends React.Component {
     // Create map
     this.createMap();
     // Creating and setting the markers
-    await this.addStations();
+    await this.props.mapStore.startRequest();
 
     // Events
     this.map.on("moveend", ev => {

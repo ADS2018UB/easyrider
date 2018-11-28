@@ -1,5 +1,8 @@
 import { Container } from "unstated";
 import moment from "moment";
+import fetch from "cross-fetch";
+
+import { API_URL } from "../constants";
 
 /**
  * State container for the Map visualization.
@@ -17,14 +20,19 @@ export default class MapContainer extends Container {
     date: moment("2018-10-01 12:00")
   };
 
-  startRequest = time => {
-    this.setState({ ...this.state, isFetching: true });
-    // Send request to backend.
-    // In callback, isFeching should be set to false.
-  };
-
   setStations = stations => {
     this.setState({ ...this.state, stations });
+  };
+
+  startRequest = async time => {
+    this.setState({ ...this.state, isFetching: true });
+    // Send request to backend.
+    const data = await fetch(`${API_URL}/stations/?date=${this.state.date}`);
+    const stations = await data.json();
+    this.setStations(stations);
+    // In callback, isFeching should be set to false.
+    this.map.updateStations(stations);
+    this.setState({ ...this.state, isFetching: false });
   };
 
   startDate = () => {

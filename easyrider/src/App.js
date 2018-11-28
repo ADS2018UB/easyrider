@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Provider, Subscribe } from "unstated";
-import { Layout } from "antd";
+import { Layout, Spin } from "antd";
 
 // eslint-disable-next-line no-unused-vars
 import UNSTATED from "unstated-debug";
@@ -30,6 +30,7 @@ class App extends Component {
                   </Footer>
                 </Layout>
                 <Sider width="225" theme="light">
+                  <Spin spinning={mapStore.state.isFetching} />
                   <TimeSider mapStore={mapStore} />
                 </Sider>
               </Layout>
