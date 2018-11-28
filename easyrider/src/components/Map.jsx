@@ -81,19 +81,22 @@ class Map extends React.Component {
     // First, remove all the current markers.
     this.removeAllStations();
     // Setting the station markers and the tooltips.
-    this.stationMarkers = _.map(stations, station => {
-      const icon = selectIcon(station.current_bikes, station.capacity);
-      const marker = L.marker([station.lat, station.lng], { icon }).addTo(
-        this.map
-      );
-      const tooltip_content = `Id: <b>${station.id}</b><br/>Name: <b>${
-        station.name
-      }</b><br/>Available: <b>${
-        station.current_bikes
-      }</b><br/>Empty: <b>${station.capacity - station.current_bikes}</b>`;
-      marker.bindPopup(tooltip_content);
-      return marker;
-    });
+    this.stationMarkers = _.chain(stations)
+      .keyBy("id")
+      .mapValues(station => {
+        const icon = selectIcon(station.current_bikes, station.capacity);
+        const marker = L.marker([station.lat, station.lng], { icon }).addTo(
+          this.map
+        );
+        const tooltip_content = `Id: <b>${station.id}</b><br/>Name: <b>${
+          station.name
+        }</b><br/>Available: <b>${
+          station.current_bikes
+        }</b><br/>Empty: <b>${station.capacity - station.current_bikes}</b>`;
+        marker.bindPopup(tooltip_content);
+        return marker;
+      })
+      .value();
   };
 
   /**
@@ -122,6 +125,13 @@ class Map extends React.Component {
   setPos = () => {
     const state = this.props.mapStore.state;
     this.map.setView([state.position.x, state.position.y], state.position.z);
+  };
+
+  openTooltip = () => {
+    const selectedId = this.props.mapStore.state.selected.id;
+    if (selectedId) {
+      this.stationMarkers[selectedId].openPopup();
+    }
   };
 
   render() {

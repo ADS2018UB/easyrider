@@ -1,8 +1,9 @@
 import { Container } from "unstated";
 import moment from "moment";
 import fetch from "cross-fetch";
+import _ from "lodash";
 
-import { API_URL } from "../constants";
+import { API_URL, SELECTED_ZOOM } from "../constants";
 
 /**
  * State container for the Map visualization.
@@ -16,9 +17,12 @@ export default class MapContainer extends Container {
   state = {
     stations: [],
     position: { x: 41.881, y: -87.623, z: 13 },
+    selected: undefined,
     isFetching: false,
     date: moment("2018-10-01 12:00")
   };
+
+  findStation = id => _.find(this.state.stations, s => s.id === id);
 
   setStations = stations => this.setState({ ...this.state, stations });
 
@@ -27,10 +31,9 @@ export default class MapContainer extends Container {
     // Send request to backend.
     const data = await fetch(`${API_URL}/stations/?date=${this.state.date}`);
     const stations = await data.json();
-    this.setStations(stations);
     // In callback, isFeching should be set to false.
     this.map.updateStations(stations);
-    this.setState({ ...this.state, isFetching: false });
+    this.setState({ ...this.state, stations, isFetching: false });
   };
 
   startDate = () => {
@@ -50,5 +53,15 @@ export default class MapContainer extends Container {
       z: zoom || this.state.position.z
     };
     this.setState({ ...this.state, position: newPos });
+  };
+
+  centerStation = async id => {
+    const selected = this.findStation(id);
+    if (selected) {
+      const position = { x: selected.lat, y: selected.lng, z: SELECTED_ZOOM };
+      await this.setState({ ...this.state, position, selected });
+      this.map.setPos();
+      this.map.openTooltip();
+    }
   };
 }
