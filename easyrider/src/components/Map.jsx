@@ -82,9 +82,9 @@ class Map extends React.Component {
       <br />
       ID: <b>${station.id}</b>
       <br />
-      Available: <b>${station.current_bikes}</b>
+      Bikes: <b>${station.current_bikes}</b>
       <br />
-      Empty: <b>${station.capacity - station.current_bikes}</b>
+      Empty slots: <b>${station.capacity - station.current_bikes}</b>
       <br /><br /><br />
       <b>PLAN YOUR TRIP</b>
       <hr />
