@@ -1,6 +1,7 @@
 import React from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import * as d3 from "d3";
 import _ from "lodash";
 
 // Fixing markers location (webpack)
@@ -78,20 +79,138 @@ class Map extends React.Component {
    * @param {station} station whose tooltip is going to be generated.
    */
   getTooltipContent = (station, date) => {
-    return `Adress: <b>${station.name}</b>
-      <br />
-      ID: <b>${station.id}</b>
-      <br />
-      Bikes: <b>${station.current_bikes}</b>
-      <br />
-      Empty slots: <b>${station.capacity - station.current_bikes}</b>
-      <br /><br /><br />
-      <b>PLAN YOUR TRIP</b>
-      <hr />
-      Date: <b>${date.format("DD-MM-YYYY HH:mm")}</b>
-      <br />
-      Week day: <b>${date.format("dddd")}</b>`;
+    //const data = station.data;
+
+    const width = 300;
+    const height = 80;
+    const margin = { left: 20, right: 15, top: 40, bottom: 40 };
+
+    const div = d3.create("div");
+
+    div
+      .append("text")
+      .text("Adress: ")
+      .append("text")
+      .style("font-weight", "bold")
+      .text(station.name);
+    div.append("br");
+    div
+      .append("text")
+      .text("ID: ")
+      .append("text")
+      .style("font-weight", "bold")
+      .text(station.id);
+    div.append("br");
+    div
+      .append("text")
+      .text("Bikes: ")
+      .append("text")
+      .style("font-weight", "bold")
+      .text(station.current_bikes);
+    div.append("br");
+    div
+      .append("text")
+      .text("Empty slots: ")
+      .append("text")
+      .style("font-weight", "bold")
+      .text(station.capacity - station.current_bikes);
+    div.append("br");
+    div.append("br");
+    div
+      .append("text")
+      .text("PLAN YOUR TRIP: ")
+      .append("hr");
+    div
+      .append("text")
+      .text("Date: ")
+      .append("text")
+      .style("font-weight", "bold")
+      .text(date.format("DD-MM-YYYY"));
+    div.append("br");
+    div
+      .append("text")
+      .text("Week day: ")
+      .append("text")
+      .style("font-weight", "bold")
+      .text(date.format("dddd"));
+
+    /*
+    var svg = div
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom);
+
+    var g = svg
+      .append("g")
+      .attr("transform", "translate(" + [margin.left, margin.top] + ")");
+
+    var y = d3
+      .scaleLinear()
+      .domain([
+        0,
+        d3.max(data, function(d) {
+          return d;
+        })
+      ])
+      .range([height, 0]);
+
+    var yAxis = d3
+      .axisLeft()
+      .ticks(4)
+      .scale(y);
+    g.append("g").call(yAxis);
+
+    var x = d3
+      .scaleBand()
+      .domain(d3.range(12))
+      .range([0, width]);
+
+    var xAxis = d3
+      .axisBottom()
+      .scale(x)
+      .tickFormat(function(d) {
+        return format(parse(d + 1));
+      });
+
+    g.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")
+      .attr("text-anchor", "end")
+      .attr("transform", "rotate(-90)translate(-12,-15)");
+
+    var rects = g
+      .selectAll("rect")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("y", height)
+      .attr("height", 0)
+      .attr("width", x.bandwidth() - 2)
+      .attr("x", function(d, i) {
+        return x(i);
+      })
+      .attr("fill", "steelblue")
+      .transition()
+      .attr("height", function(d) {
+        return height - y(d);
+      })
+      .attr("y", function(d) {
+        return y(d);
+      })
+      .duration(1000);
+
+    var title = svg
+      .append("text")
+      .style("font-size", "20px")
+      .text(feature.properties.title)
+      .attr("x", width / 2 + margin.left)
+      .attr("y", 30)
+      .attr("text-anchor", "middle");
+    */
+    return div.node();
   };
+
   /**
    * Updates the station information given a ser of station data objects.
    * @param {list of station objects} stations List of the station objects returned by the backend.
