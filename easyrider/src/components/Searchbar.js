@@ -36,6 +36,7 @@ class Searchbar extends Component {
       <div id="searchbar">
         <AutoComplete
           dataSource={options}
+          defaultActiveFirstOption={false}
           placeholder={"Search in the map"}
           onSearch={value => (value ? options : [])}
           onSelect={this.onSelect.bind(this)}
