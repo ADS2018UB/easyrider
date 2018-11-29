@@ -25,16 +25,16 @@ export default class MapContainer extends Container {
   findStation = id =>
     _.find(this.state.stations, s => parseInt(s.id) === parseInt(id));
 
-  setStations = stations => this.setState({ ...this.state, stations });
+  setStations = stations => this.setState({ stations });
 
   startRequest = async () => {
-    this.setState({ ...this.state, isFetching: true });
+    this.setState({ isFetching: true });
     // Send request to backend.
     const data = await fetch(`${API_URL}/stations/?date=${this.state.date}`);
     const stations = await data.json();
     // In callback, isFeching should be set to false.
     this.map.updateStations(stations, this.state.date);
-    this.setState({ ...this.state, stations, isFetching: false });
+    this.setState({ stations, isFetching: false });
   };
 
   startDate = () => {
@@ -43,7 +43,7 @@ export default class MapContainer extends Container {
 
   setDate = date => {
     date.minute(((date.minute() / 10) >> 0) * 10);
-    this.setState({ ...this.state, date });
+    this.setState({ date });
     this.startRequest();
   };
 
@@ -53,14 +53,14 @@ export default class MapContainer extends Container {
       y: pos.lng || this.state.position.y,
       z: zoom || this.state.position.z
     };
-    this.setState({ ...this.state, position: newPos });
+    this.setState({ position: newPos });
   };
 
   centerStation = async id => {
     const selected = this.findStation(id);
     if (selected) {
       const position = { x: selected.lat, y: selected.lng, z: SELECTED_ZOOM };
-      await this.setState({ ...this.state, position, selected });
+      await this.setState({ position, selected });
       this.map.setPos();
       this.map.openTooltip();
     }
