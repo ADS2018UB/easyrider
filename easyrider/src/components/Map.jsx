@@ -39,18 +39,14 @@ const iconRanges = _.chain(icons)
 const selectIcon = (current, total) => {
   const q = Math.trunc((parseFloat(current) / parseFloat(total)) * 1000);
   if (q === 0 || q === 1000) {
-    console.log(q);
     return icons[q];
   } else if (q > iconRanges.slice(-2, -1)[0]) {
     return icons[iconRanges.slice(-2, -1)[0]];
   } else {
     const ranges = iconRanges.slice(1, iconRanges.length - 1);
-    // console.log(ranges);
     for (let i = 0; i < ranges.length; i++) {
       const r = ranges[i];
-      // console.log(`it ${ranges.length} ${i} ${q} ${r}`);
       if (q <= r) {
-        // console.log(`-> ${q} ${r}`);
         return icons[r];
       }
     }
@@ -234,7 +230,6 @@ class Map extends React.Component {
       .keyBy("id")
       .mapValues(station => {
         const icon = selectIcon(station.current_bikes, station.capacity);
-        // console.log(icon);
         const marker = L.marker([station.lat, station.lng], { icon }).addTo(
           this.map
         );
@@ -257,7 +252,6 @@ class Map extends React.Component {
 
     // Events
     this.map.on("moveend", ev => {
-      // console.log(this.props.mapStore);
       const newPos = ev.target.getCenter();
       const zoom = ev.target.getZoom();
       this.props.mapStore.setPos(newPos, zoom);
