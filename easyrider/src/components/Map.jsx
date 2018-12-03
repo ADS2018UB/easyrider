@@ -12,22 +12,24 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png")
 });
 
-/**
- * Builds a Leaflet icon object for the current station icons in the
- * public directory.
- * @param {string} iconUrl Url for the icon.
- */
-const createIcon = iconUrl =>
-  L.icon({
-    iconUrl,
-    iconSize: [32, 32], // size of the icon
-    iconAnchor: [16, 32], // point of the icon which will correspond to marker's location
-    popupAnchor: [0, -24] // point from which the popup should open relative to the iconAnchor
-  });
-
-const okIcon = createIcon("pin_white.png");
-const warnIcon = createIcon("pin_yellow.png");
-const koIcon = createIcon("pin_red.png");
+const icons = _.chain(_.range(0, 1001, 125))
+  .keyBy()
+  .mapValues(x => {
+    const s = `${x}`.padStart(4, "0");
+    const iconUrl = `xs/marker_xs_${s}.png`;
+    const icon = L.icon({
+      iconUrl,
+      iconSize: [23, 32], // size of the icon
+      iconAnchor: [11, 32], // point of the icon which will correspond to marker's location
+      popupAnchor: [0, -20] // point from which the popup should open relative to the iconAnchor
+    });
+    return icon;
+  })
+  .value();
+const iconRanges = _.chain(icons)
+  .keys()
+  .map(i => parseInt(i))
+  .value();
 
 /**
  * Provides an icon given the proportion of available docks.
@@ -35,14 +37,23 @@ const koIcon = createIcon("pin_red.png");
  * @param {int} total The total amount of docks.
  */
 const selectIcon = (current, total) => {
-  const q = parseFloat(current) / parseFloat(total);
-  // console.log(current, total, q);
-  if (current === 0) {
-    return koIcon;
-  } else if (q <= 0.2) {
-    return warnIcon;
+  const q = Math.trunc((parseFloat(current) / parseFloat(total)) * 1000);
+  if (q === 0 || q === 1000) {
+    console.log(q);
+    return icons[q];
+  } else if (q > iconRanges.slice(-2, -1)[0]) {
+    return icons[iconRanges.slice(-2, -1)[0]];
   } else {
-    return okIcon;
+    const ranges = iconRanges.slice(1, iconRanges.length - 1);
+    // console.log(ranges);
+    for (let i = 0; i < ranges.length; i++) {
+      const r = ranges[i];
+      // console.log(`it ${ranges.length} ${i} ${q} ${r}`);
+      if (q <= r) {
+        // console.log(`-> ${q} ${r}`);
+        return icons[r];
+      }
+    }
   }
 };
 
@@ -81,9 +92,9 @@ class Map extends React.Component {
   getTooltipContent = (station, date) => {
     //const data = station.data;
 
-    const width = 300;
-    const height = 80;
-    const margin = { left: 20, right: 15, top: 40, bottom: 40 };
+    // const width = 300;
+    // const height = 80;
+    // const margin = { left: 20, right: 15, top: 40, bottom: 40 };
 
     const div = d3.create("div");
 
@@ -223,6 +234,7 @@ class Map extends React.Component {
       .keyBy("id")
       .mapValues(station => {
         const icon = selectIcon(station.current_bikes, station.capacity);
+        // console.log(icon);
         const marker = L.marker([station.lat, station.lng], { icon }).addTo(
           this.map
         );
