@@ -105,11 +105,12 @@ def compute_features(df):
     return df
 
 
-def train_test_split(df, test_start='20181012'):
+def train_test_split(df, test_start='20181001', test_end='20181015'):
     # every hour we have 6 rows, one every 10 minutes
     entries_per_hour = 6
+
     train_df = df.query('20170101 <= ts < {}'.format(test_start))
-    test_df = df.query('ts >= {}'.format(test_start))
+    test_df = df.query('{} <= ts < {}'.format(test_start, test_end))
 
     # overwrite last_1w_hourly_mean, last_1w_daily_mean columns for the second test week
     # this info is not available at test time!
@@ -117,7 +118,7 @@ def train_test_split(df, test_start='20181012'):
         :entries_per_hour*24*7].index
     features = ['last_1w_hourly_mean', 'last_1w_daily_mean']
     test_df.loc[idx, features] = test_df.loc[idx -
-                                             datetime.timedelta(weeks=1), features]
+                                             datetime.timedelta(weeks=1), features].values
 
     # drop first 2 weeks in train, no info for last_1w/2w features
     train_df = train_df.iloc[entries_per_hour*24*7*2:]
@@ -128,6 +129,10 @@ def train_test_split(df, test_start='20181012'):
 
     return train_df, test_df
 
+def _scoring(estimator, X, y):
+    y_true = y.values.ravel()
+    y_hat = estimator.predict(X)
+    return np.sqrt(np.mean((np.log1p(np.maximum(0, y_true)) - np.log1p(np.maximum(0, y_hat)))**2))
 
 def optimize(train_df, test_df, features, target, iters=50):
     # transform categorical features
@@ -141,15 +146,12 @@ def optimize(train_df, test_df, features, target, iters=50):
         ),
         search_spaces={
             'learning_rate': (0.01, 1.0, 'log-uniform'),
-            'max_depth': (0, 50),
-            'max_delta_step': (0, 20),
-            'subsample': (0.01, 1.0, 'uniform'),
-            'colsample_bytree': (0.01, 1.0, 'uniform'),
+            'max_depth': (3, 5),
             'bagging_fraction': (0.01, 1.0, 'uniform'),
             'feature_fraction': (0.01, 1.0, 'uniform'),
             'reg_lambda': (1e-9, 1000, 'log-uniform'),
             'reg_alpha': (1e-9, 1.0, 'log-uniform'),
-            'min_child_weight': (0, 5),
+            'min_child_weight': (1e-3, 1e-1),
             'n_estimators': (100, 1000)
         },
         cv=StratifiedKFold(
@@ -157,8 +159,8 @@ def optimize(train_df, test_df, features, target, iters=50):
             shuffle=True,
             random_state=42
         ),
-        scoring='neg_mean_squared_error',
-        n_jobs=4,
+        scoring=_scoring,
+        n_jobs=1,
         n_iter=iters,
         verbose=0,
         refit=True,
