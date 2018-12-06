@@ -86,11 +86,12 @@ class Map extends React.Component {
    * @param {station} station whose tooltip is going to be generated.
    */
   getTooltipContent = (station, date) => {
-    //const data = station.data;
+    const data = station.trend;
 
-    // const width = 300;
-    // const height = 80;
-    // const margin = { left: 20, right: 15, top: 40, bottom: 40 };
+    const width = 250;
+    const height = 60;
+
+    const margin = { left: 20, right: 0, top: 20, bottom: 30 };
 
     const div = d3.create("div");
 
@@ -141,7 +142,6 @@ class Map extends React.Component {
       .style("font-weight", "bold")
       .text(date.format("dddd"));
 
-    /*
     var svg = div
       .append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -169,25 +169,22 @@ class Map extends React.Component {
 
     var x = d3
       .scaleBand()
-      .domain(d3.range(12))
+      .domain(d3.range(data.length))
       .range([0, width]);
 
     var xAxis = d3
       .axisBottom()
       .scale(x)
       .tickFormat(function(d) {
-        return format(parse(d + 1));
+        return d + 1;
       });
 
     g.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
-      .selectAll("text")
-      .attr("text-anchor", "end")
-      .attr("transform", "rotate(-90)translate(-12,-15)");
+      .selectAll("text");
 
-    var rects = g
-      .selectAll("rect")
+    g.selectAll("rect")
       .data(data)
       .enter()
       .append("rect")
@@ -206,7 +203,7 @@ class Map extends React.Component {
         return y(d);
       })
       .duration(1000);
-
+    /*
     var title = svg
       .append("text")
       .style("font-size", "20px")
@@ -214,7 +211,7 @@ class Map extends React.Component {
       .attr("x", width / 2 + margin.left)
       .attr("y", 30)
       .attr("text-anchor", "middle");
-    */
+*/
     return div.node();
   };
 
