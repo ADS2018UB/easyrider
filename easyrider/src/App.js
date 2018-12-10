@@ -1,32 +1,22 @@
 import React, { Component } from "react";
 import { Provider, Subscribe } from "unstated";
-import { Layout } from "antd";
+import { Layout, Spin } from "antd";
 
 // eslint-disable-next-line no-unused-vars
 import UNSTATED from "unstated-debug";
 
-import Map, { MapContainer } from "./components/Map";
+import Map from "./components/Map";
+import MapContainer from "./containers/MapContainer";
 import TimeSider from "./components/TimeSider";
 import Timeline from "./components/Timeline";
+import Searchbar from "./components/Searchbar";
+
 import "./App.css";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Footer, Sider, Content } = Layout;
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { date: null, sliderNum: 50 };
-  }
-
   render() {
-    const { date, sliderNum } = this.state;
-    const minuteStep = 5;
-
-    const onChangeDate = date => this.setState({ date });
-
-    const onChangeSlider = value => this.setState({ sliderNum: value });
-    const onAfterChangeSlider = value => this.setState({ sliderNum: value });
-
     return (
       <div className="App">
         <Provider>
@@ -38,21 +28,13 @@ class App extends Component {
                     <Map id="map" mapStore={mapStore} />
                   </Content>
                   <Footer>
-                    <Timeline
-                      step={minuteStep}
-                      date={date}
-                      sliderNum={sliderNum}
-                      onChange={onChangeSlider}
-                      onAfterChange={onAfterChangeSlider}
-                    />
+                    <Timeline mapStore={mapStore} />
                   </Footer>
                 </Layout>
-                <Sider width="300" theme="light">
-                  <TimeSider
-                    step={minuteStep}
-                    date={date}
-                    onChangeDate={onChangeDate}
-                  />
+                <Sider width="225" theme="light">
+                  <Searchbar mapStore={mapStore} />
+                  <Spin spinning={mapStore.state.isFetching} />
+                  <TimeSider mapStore={mapStore} />
                 </Sider>
               </Layout>
             )}
