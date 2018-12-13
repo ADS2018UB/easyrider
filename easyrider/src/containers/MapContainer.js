@@ -37,6 +37,16 @@ export default class MapContainer extends Container {
     this.setState({ stations, isFetching: false });
   };
 
+  fetchStation = async id => {
+    this.setState({ isFetching: true });
+    const data = await fetch(
+      `${API_URL}/stations/${id}/?date=${this.state.date}`
+    );
+    const station = await data.json();
+    this.setState({ isFetching: false });
+    return station;
+  };
+
   startDate = () => {
     this.setState({ date: moment("2018-10-01 12:00") });
   };
