@@ -86,7 +86,9 @@ class Map extends React.Component {
    * @param {station} station whose tooltip is going to be generated.
    */
   getTooltipContent = (station, date) => {
-    const data = station.trend;
+    // console.log(station);
+    // console.log(date);
+    // const data = station.trend;
 
     const width = 250;
     const height = 60;
@@ -100,14 +102,14 @@ class Map extends React.Component {
       .text("Adress: ")
       .append("text")
       .style("font-weight", "bold")
-      .text(station.name);
+      .text(station.station_name);
     div.append("br");
     div
       .append("text")
       .text("ID: ")
       .append("text")
       .style("font-weight", "bold")
-      .text(station.id);
+      .text(station.station_id);
     div.append("br");
     div
       .append("text")
@@ -121,7 +123,7 @@ class Map extends React.Component {
       .text("Empty slots: ")
       .append("text")
       .style("font-weight", "bold")
-      .text(station.capacity - station.current_bikes);
+      .text(station.total_docks - station.current_bikes);
     div.append("br");
     div.append("br");
     div
@@ -151,58 +153,58 @@ class Map extends React.Component {
       .append("g")
       .attr("transform", "translate(" + [margin.left, margin.top] + ")");
 
-    var y = d3
-      .scaleLinear()
-      .domain([
-        0,
-        d3.max(data, function(d) {
-          return d;
-        })
-      ])
-      .range([height, 0]);
+    // var y = d3
+    //   .scaleLinear()
+    //   .domain([
+    //     0,
+    //     d3.max(data, function(d) {
+    //       return d;
+    //     })
+    //   ])
+    //   .range([height, 0]);
 
-    var yAxis = d3
-      .axisLeft()
-      .ticks(4)
-      .scale(y);
-    g.append("g").call(yAxis);
+    // var yAxis = d3
+    //   .axisLeft()
+    //   .ticks(4)
+    //   .scale(y);
+    // g.append("g").call(yAxis);
 
-    var x = d3
-      .scaleBand()
-      .domain(d3.range(data.length))
-      .range([0, width]);
+    // var x = d3
+    //   .scaleBand()
+    //   .domain(d3.range(data.length))
+    //   .range([0, width]);
 
-    var xAxis = d3
-      .axisBottom()
-      .scale(x)
-      .tickFormat(function(d) {
-        return d + 1;
-      });
+    // var xAxis = d3
+    //   .axisBottom()
+    //   .scale(x)
+    //   .tickFormat(function(d) {
+    //     return d + 1;
+    //   });
 
-    g.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-      .selectAll("text");
+    // g.append("g")
+    //   .attr("transform", "translate(0," + height + ")")
+    //   .call(xAxis)
+    //   .selectAll("text");
 
-    g.selectAll("rect")
-      .data(data)
-      .enter()
-      .append("rect")
-      .attr("y", height)
-      .attr("height", 0)
-      .attr("width", x.bandwidth() - 2)
-      .attr("x", function(d, i) {
-        return x(i);
-      })
-      .attr("fill", "steelblue")
-      .transition()
-      .attr("height", function(d) {
-        return height - y(d);
-      })
-      .attr("y", function(d) {
-        return y(d);
-      })
-      .duration(1000);
+    // g.selectAll("rect")
+    //   .data(data)
+    //   .enter()
+    //   .append("rect")
+    //   .attr("y", height)
+    //   .attr("height", 0)
+    //   .attr("width", x.bandwidth() - 2)
+    //   .attr("x", function(d, i) {
+    //     return x(i);
+    //   })
+    //   .attr("fill", "steelblue")
+    //   .transition()
+    //   .attr("height", function(d) {
+    //     return height - y(d);
+    //   })
+    //   .attr("y", function(d) {
+    //     return y(d);
+    //   })
+    //   .duration(1000);
     /*
     var title = svg
       .append("text")
@@ -224,12 +226,12 @@ class Map extends React.Component {
     this.removeAllStations();
     // Setting the station markers and the tooltips.
     this.stationMarkers = _.chain(stations)
-      .keyBy("id")
+      .keyBy("station_id")
       .mapValues(station => {
-        const icon = selectIcon(station.current_bikes, station.capacity);
-        const marker = L.marker([station.lat, station.lng], { icon }).addTo(
-          this.map
-        );
+        const icon = selectIcon(station.current_bikes, station.total_docks);
+        const marker = L.marker([station.latitude, station.longitude], {
+          icon
+        }).addTo(this.map);
 
         marker.bindPopup(this.getTooltipContent(station, date));
         return marker;
@@ -265,7 +267,7 @@ class Map extends React.Component {
   };
 
   openTooltip = () => {
-    const selectedId = this.props.mapStore.state.selected.id;
+    const selectedId = this.props.mapStore.state.selected.station_id;
     if (selectedId) {
       this.stationMarkers[selectedId].openPopup();
     }

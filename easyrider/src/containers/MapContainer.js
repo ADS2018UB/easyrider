@@ -23,7 +23,7 @@ export default class MapContainer extends Container {
   };
 
   findStation = id =>
-    _.find(this.state.stations, s => parseInt(s.id) === parseInt(id));
+    _.find(this.state.stations, s => parseInt(s.station_id) === parseInt(id));
 
   setStations = stations => this.setState({ stations });
 

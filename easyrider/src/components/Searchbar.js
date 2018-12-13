@@ -25,10 +25,14 @@ class Searchbar extends Component {
 
   render() {
     const { stations } = this.props.mapStore.state;
+    console.log("-->", stations);
 
     const options = stations.map(station => (
-      <Option key={station.id} text={`${station.id} ${station.name}`}>
-        {station.name}
+      <Option
+        key={station.station_id}
+        text={`${station.station_id} ${station.station_name}`}
+      >
+        {station.station_name}
       </Option>
     ));
 
