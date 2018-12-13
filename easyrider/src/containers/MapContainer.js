@@ -69,7 +69,11 @@ export default class MapContainer extends Container {
   centerStation = async id => {
     const selected = this.findStation(id);
     if (selected) {
-      const position = { x: selected.lat, y: selected.lng, z: SELECTED_ZOOM };
+      const position = {
+        x: selected.latitude,
+        y: selected.longitude,
+        z: SELECTED_ZOOM
+      };
       await this.setState({ position, selected });
       this.map.setPos();
       this.map.openTooltip();
