@@ -86,8 +86,6 @@ class Map extends React.Component {
    * @param {station} station whose tooltip is going to be generated.
    */
   getTooltipContent = (station, date) => {
-    // console.log(station);
-    // console.log(date);
     const data = station.trend;
 
     const width = 250;
@@ -222,17 +220,23 @@ class Map extends React.Component {
    * @param {list of station objects} stations List of the station objects returned by the backend.
    */
   updateStations = (stations, date) => {
-    // First, remove all the current markers.
-    this.removeAllStations();
-    // Setting the station markers and the tooltips.
-    this.stationMarkers = _.chain(stations)
-      .keyBy("station_id")
-      .mapValues(station => {
-        const icon = selectIcon(station.current_bikes, station.total_docks);
-        const marker = L.marker([station.latitude, station.longitude], {
-          icon
-        })
-          .addTo(this.map)
+    _.forEach(stations, station => {
+      const icon = selectIcon(station.current_bikes, station.total_docks);
+      let marker = this.stationMarkers[station.station_id];
+      if (marker) {
+        marker.setIcon(icon);
+        if (marker.isPopupOpen()) {
+          this.props.mapStore
+            .fetchStation(marker.properties.station_id)
+            .then(remote_station => {
+              const content = this.getTooltipContent(remote_station, date);
+              marker.setPopupContent(content);
+            });
+        }
+      } else {
+        marker = L.marker([station.latitude, station.longitude], { icon });
+        marker.addTo(this.map);
+        marker
           .on("click", x => {
             const marker = x.target;
             this.props.mapStore
@@ -246,12 +250,10 @@ class Map extends React.Component {
             const marker = x.target;
             marker.unbindPopup();
           });
-
         marker.properties = { station_id: station.station_id };
-
-        return marker;
-      })
-      .value();
+        this.stationMarkers[station.station_id] = marker;
+      }
+    });
   };
 
   /**

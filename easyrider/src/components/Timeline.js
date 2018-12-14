@@ -11,7 +11,8 @@ class Timeline extends Component {
     res = (value - minute) / 60;
     const hour = res === 0 ? "00" : res;
 
-    return hour + ":" + minute;
+    const rmin = minute === "00" ? "05" : minute + 5;
+    return hour + ":" + rmin;
   };
 
   onAfterChange = value => {
