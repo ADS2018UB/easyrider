@@ -51,9 +51,9 @@ export default class MapContainer extends Container {
     this.setState({ date: moment("2018-10-01 12:00") });
   };
 
-  setDate = date => {
+  setDate = async date => {
     date.minute(((date.minute() / 10) >> 0) * 10);
-    this.setState({ date });
+    await this.setState({ date });
     this.startRequest();
   };
 
