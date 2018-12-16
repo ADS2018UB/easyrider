@@ -88,10 +88,9 @@ class Map extends React.Component {
   getTooltipContent = (station, date) => {
     const data = station.trend;
 
-    const width = 250;
-    const height = 60;
-
-    const margin = { left: 20, right: 0, top: 20, bottom: 30 };
+    const margin = { left: 40, right: 20, top: 20, bottom: 30 };
+    const width = 300 - margin.left - margin.right;
+    const height = 100 - margin.top - margin.bottom;
 
     const div = d3.create("div");
 
@@ -101,7 +100,9 @@ class Map extends React.Component {
       .append("text")
       .style("font-weight", "bold")
       .text(station.station_name);
+
     div.append("br");
+
     div
       .append("text")
       .text("ID: ")
@@ -149,7 +150,7 @@ class Map extends React.Component {
 
     var g = svg
       .append("g")
-      .attr("transform", "translate(" + [margin.left, margin.top] + ")");
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var y = d3
       .scaleLinear()
@@ -161,28 +162,46 @@ class Map extends React.Component {
       ])
       .range([height, 0]);
 
-    var yAxis = d3
-      .axisLeft()
-      .ticks(4)
-      .scale(y);
+    // y Axis
+    var yAxis = d3.axisLeft(y).ticks(4);
+
     g.append("g").call(yAxis);
+
+    // text label for the y axis
+    svg
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", margin.left / 2.1)
+      .attr("x", 0 - height / 2 - margin.top)
+      .style("text-anchor", "middle")
+      .text("Bikes");
 
     var x = d3
       .scaleBand()
       .domain(d3.range(data.length))
       .range([0, width]);
 
-    var xAxis = d3
-      .axisBottom()
-      .scale(x)
-      .tickFormat(function(d) {
-        return d + 1;
-      });
+    // x Axis
+    var xAxis = d3.axisBottom(x).tickFormat(d => d + 1);
 
     g.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
       .selectAll("text");
+
+    // Label for the x axis
+    svg
+      .append("text")
+      .attr(
+        "transform",
+        "translate(" +
+          (width / 2 + margin.left) +
+          " ," +
+          (height + margin.top + 30) +
+          ")"
+      )
+      .style("text-anchor", "middle")
+      .text("Hours");
 
     g.selectAll("rect")
       .data(data)
@@ -203,15 +222,7 @@ class Map extends React.Component {
         return y(d);
       })
       .duration(1000);
-    /*
-    var title = svg
-      .append("text")
-      .style("font-size", "20px")
-      .text(feature.properties.title)
-      .attr("x", width / 2 + margin.left)
-      .attr("y", 30)
-      .attr("text-anchor", "middle");
-*/
+
     return div.node();
   };
 
