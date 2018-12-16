@@ -6,13 +6,12 @@ import "./time.css";
 class Timeline extends Component {
   formatter = value => {
     let res = value % 60;
-    const minute = res === 0 ? "00" : res;
+    const minute = res === 5 ? "05" : res;
 
     res = (value - minute) / 60;
-    const hour = res === 0 ? "00" : res;
+    const hour = res < 10 ? "0" + res : res;
 
-    const rmin = minute === "00" ? "05" : minute + 5;
-    return hour + ":" + rmin;
+    return hour + ":" + minute;
   };
 
   onAfterChange = value => {
@@ -22,8 +21,6 @@ class Timeline extends Component {
     const hour = (value - minute) / 60;
 
     this.props.mapStore.setDate(date.hour(hour).minute(minute));
-
-    //TODO: call here the endpoint to update the map
   };
 
   render() {
@@ -40,7 +37,8 @@ class Timeline extends Component {
           step={minuteStep}
           defaultValue={defSliderNum}
           tipFormatter={this.formatter}
-          max={1430}
+          min={5}
+          max={1435}
           onAfterChange={this.onAfterChange.bind(this)}
         />
       </div>

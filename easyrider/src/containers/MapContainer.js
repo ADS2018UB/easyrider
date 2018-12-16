@@ -19,7 +19,7 @@ export default class MapContainer extends Container {
     position: { x: 41.881, y: -87.623, z: 13 },
     selected: undefined,
     isFetching: false,
-    date: moment("2018-10-01 12:00")
+    date: moment("2018-10-01 12:05")
   };
 
   findStation = id =>
@@ -48,11 +48,10 @@ export default class MapContainer extends Container {
   };
 
   startDate = () => {
-    this.setState({ date: moment("2018-10-01 12:00") });
+    this.setDate(moment("2018-10-01 12:05"));
   };
 
   setDate = async date => {
-    date.minute(((date.minute() / 10) >> 0) * 10);
     await this.setState({ date });
     this.startRequest();
   };

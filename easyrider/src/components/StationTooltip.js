@@ -53,7 +53,7 @@ export function getTooltipContent(station, date) {
     .text("Date: ")
     .append("text")
     .style("font-weight", "bold")
-    .text(date.format("DD-MM-YYYY"));
+    .text(date.format("DD-MM-YYYY HH:mm"));
   div.append("br");
   div
     .append("text")
@@ -90,7 +90,7 @@ export function getTooltipContent(station, date) {
   svg
     .append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", margin.left / 2.1)
+    .attr("y", margin.left / 3)
     .attr("x", 0 - height / 2 - margin.top)
     .style("text-anchor", "middle")
     .text("Bikes");
@@ -101,7 +101,9 @@ export function getTooltipContent(station, date) {
     .range([0, width]);
 
   // x Axis
-  var xAxis = d3.axisBottom(x).tickFormat(d => d + 1);
+  var xAxis = d3.axisBottom(x).tickFormat(d => {
+    return d % 2 === 1 ? d : "";
+  });
 
   g.append("g")
     .attr("transform", "translate(0," + height + ")")
