@@ -2,13 +2,23 @@ import React, { Component } from "react";
 import { Icon, Input, AutoComplete } from "antd";
 
 const Option = AutoComplete.Option;
+let selected = false;
 
 class Searchbar extends Component {
-  onSelect(value) {
-    console.log("onSelect", value);
-    this.props.mapStore.centerStation(value);
+  state = { stationName: null };
 
-    return value;
+  onChange(text) {
+    if (!selected) {
+      this.setState({ stationName: text });
+    } else {
+      selected = false;
+      this.setState({ stationName: "" });
+    }
+  }
+
+  onSelect(value) {
+    this.props.mapStore.centerStation(value);
+    selected = true;
   }
 
   filterOptions(input, option) {
@@ -25,7 +35,6 @@ class Searchbar extends Component {
 
   render() {
     const { stations } = this.props.mapStore.state;
-    // console.log("-->", stations);
 
     const options = stations.map(station => (
       <Option
@@ -42,6 +51,8 @@ class Searchbar extends Component {
           dataSource={options}
           defaultActiveFirstOption={false}
           placeholder={"Search in the map"}
+          value={this.state.stationName}
+          onChange={this.onChange.bind(this)}
           onSearch={value => (value ? options : [])}
           onSelect={this.onSelect.bind(this)}
           filterOption={this.filterOptions}
