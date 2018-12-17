@@ -68,10 +68,14 @@ class StationsController < ApplicationController
   end
 
   def set_date
-    @date = params[:date].nil? ? nil : (Time.parse params[:date])
+    begin
+      @date = params[:date].nil? ? nil : (Time.parse params[:date])
+    rescue ArgumentError
+      raise ActionController::BadRequest.new, "Date parameter must be of form yyyy-mm-ddThh:mm" if @date.nil?
+    end
     raise ActionController::BadRequest.new, "Date parameter must be set" if @date.nil?
     raise ActionController::BadRequest.new, "Invalid date (must be between #{MIN_DATE} and #{MAX_DATE})." unless @date.between?(MIN_DATE, MAX_DATE)
-    puts @date
+    @date
   end
 
   # Only allow a trusted parameter "white list" through.
@@ -81,7 +85,7 @@ class StationsController < ApplicationController
 
   def get_trend(station)
     # just do that manually here in ruby since it won't have to perform thaaat fast...
-    states = station.states.where(ts: (@date.beginning_of_day + 6.hours..@date.end_of_day)).all.pluck(:available_bikes)
+    states = station.states.where(ts: (@date.beginning_of_day..@date.end_of_day)).all.pluck(:available_bikes)
     trend = Array.new
     states.each_slice(6) do |a|
       trend << (a.inject(&:+) / 6).round(2)
