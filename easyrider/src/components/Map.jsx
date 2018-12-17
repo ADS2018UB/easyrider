@@ -98,26 +98,32 @@ class Map extends React.Component {
               const content = getTooltipContent(remote_station, date);
               marker.setPopupContent(content);
             });
+        } else {
+          marker.setPopupContent("");
         }
       } else {
         marker = L.marker([station.latitude, station.longitude], { icon });
         marker.addTo(this.map);
-        marker
-          .on("click", x => {
-            const marker = x.target;
-            this.props.mapStore
-              .fetchStation(marker.properties.station_id)
-              .then(remote_station => {
-                marker.bindPopup(getTooltipContent(remote_station, date));
-                marker.openPopup();
-              });
-          })
-          .on("popupclose", x => {
-            const marker = x.target;
-            marker.unbindPopup();
-          });
         marker.properties = { station_id: station.station_id };
         this.stationMarkers[station.station_id] = marker;
+      }
+      if (marker._events.click) marker._events.click = [];
+      marker
+        .on("click", x => {
+          const marker = x.target;
+          this.props.mapStore
+            .fetchStation(marker.properties.station_id)
+            .then(remote_station => {
+              marker.bindPopup(getTooltipContent(remote_station, date));
+              marker.openPopup();
+            });
+        })
+        .on("popupclose", x => {
+          const marker = x.target;
+          marker.unbindPopup();
+        });
+      if (station.station_id === 2) {
+        console.log(marker);
       }
     });
   };
