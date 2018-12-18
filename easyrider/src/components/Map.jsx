@@ -158,7 +158,7 @@ class Map extends React.Component {
   openTooltip = () => {
     const selectedId = this.props.mapStore.state.selected.station_id;
     if (selectedId) {
-      this.stationMarkers[selectedId].openPopup();
+      this.stationMarkers[selectedId].fire("click");
     }
   };
 

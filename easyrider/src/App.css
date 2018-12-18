@@ -21,7 +21,21 @@ body {
   height: 100%;
 }
 
+#logo-container {
+  padding-left: 2%;
+  padding-right: 2%;
+  text-align: center;
+}
+
+#logo {
+  margin-top: 5%;
+}
+
 #searchbar {
   width: 100%;
   margin-top: 20px;
+}
+
+#spinner {
+  margin-top: 10%;
 }
