@@ -11,6 +11,7 @@ import TimeSider from "./components/TimeSider";
 import Timeline from "./components/Timeline";
 import Searchbar from "./components/Searchbar";
 import Logo from "./components/Logo";
+import AppDescription from "./components/AppDescription";
 
 import "./App.css";
 
@@ -36,6 +37,7 @@ class App extends Component {
                 </Layout>
                 <Sider width="225" theme="light">
                   <Logo />
+                  <AppDescription />
                   <Searchbar mapStore={mapStore} />
                   <Spin
                     id="spinner"
