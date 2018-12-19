@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Slider } from "antd";
+import { Slider, TimePicker } from "antd";
 
 import "./time.css";
 
@@ -23,11 +23,22 @@ class Timeline extends Component {
     this.props.mapStore.setDate(date.hour(hour).minute(minute));
   };
 
+  disabledMinutes = hour => {
+    const result = [];
+    for (let i = 0; i <= 59; i++) {
+      if ((i + 5) % 10 !== 0) {
+        result.push(i);
+      }
+    }
+    return result;
+  };
+
   render() {
     const { date } = this.props.mapStore.state;
 
     const minuteStep = 10;
     const defSliderNum = 60 * date.hour() + date.minute();
+    const format = "HH:mm";
     const marks = {
       5: "00:05",
       365: "06:05",
@@ -37,7 +48,7 @@ class Timeline extends Component {
     };
 
     return (
-      <div>
+      <div id="time_select">
         <Slider
           id="time_slider"
           included={false}
@@ -48,6 +59,13 @@ class Timeline extends Component {
           min={5}
           max={1435}
           onAfterChange={this.onAfterChange.bind(this)}
+        />
+        <TimePicker
+          value={date}
+          format={format}
+          disabledMinutes={this.disabledMinutes}
+          hideDisabledOptions={true}
+          allowEmpty={false}
         />
       </div>
     );

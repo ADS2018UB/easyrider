@@ -25,6 +25,10 @@ body {
   padding: 10px;
 }
 
+.ant-layout-footer {
+  padding: 10px 25px 10px 40px;
+}
+
 #logo-container {
   text-align: center;
 }
