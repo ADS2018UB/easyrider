@@ -12,6 +12,7 @@ import Timeline from "./components/Timeline";
 import Searchbar from "./components/Searchbar";
 import Logo from "./components/Logo";
 import AppDescription from "./components/AppDescription";
+import Legend from "./components/Legend";
 
 import "./App.css";
 
@@ -39,6 +40,7 @@ class App extends Component {
                   <Logo />
                   <AppDescription />
                   <Searchbar mapStore={mapStore} />
+                  <Legend />
                   <Spin
                     id="spinner"
                     // size="large"
