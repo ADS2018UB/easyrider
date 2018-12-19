@@ -46,8 +46,9 @@ class Searchbar extends Component {
     ));
 
     return (
-      <div id="searchbar">
+      <div>
         <AutoComplete
+          id="searchbar"
           dataSource={options}
           defaultActiveFirstOption={false}
           placeholder={"Search in the map"}

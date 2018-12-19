@@ -35,7 +35,7 @@ class App extends Component {
                     <Timeline mapStore={mapStore} />
                   </Footer>
                 </Layout>
-                <Sider width="225" theme="light">
+                <Sider id="sider" width="225" theme="light">
                   <Logo />
                   <AppDescription />
                   <Searchbar mapStore={mapStore} />

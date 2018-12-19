@@ -21,20 +21,16 @@ body {
   height: 100%;
 }
 
-#logo-container {
-  padding-left: 2%;
-  padding-right: 2%;
-  text-align: center;
+#sider {
+  padding: 10px;
 }
 
-#logo {
-  margin-top: 5%;
+#logo-container {
+  text-align: center;
 }
 
 #searchbar {
   width: 100%;
-  padding-left: 10px;
-  padding-left: 10px;
 }
 
 #spinner {
@@ -44,6 +40,8 @@ body {
 
 #app-description {
   text-align: justify;
-  padding-left: 10px;
-  padding-left: 10px;
+}
+
+#app-description p{
+  margin-bottom: 0.5em;
 }
