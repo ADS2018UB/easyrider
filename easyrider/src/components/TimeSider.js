@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, DatePicker } from "antd";
+import { Button, DatePicker, Tag } from "antd";
 import moment from "moment";
 
 import "./time.css";
@@ -20,8 +20,19 @@ class TimeSider extends Component {
     const { date } = this.props.mapStore.state;
     const { startDate, setDate } = this.props.mapStore;
 
+    const prediction = date >= moment("2018-10-01 00:05");
+
     return (
       <div id="time_select">
+        {prediction ? (
+          <Tag className="indicator" color="gold">
+            PREDICTION
+          </Tag>
+        ) : (
+          <Tag className="indicator" color="cyan">
+            HISTORICAL
+          </Tag>
+        )}
         <div className="sider_control">
           <Button
             type="primary"

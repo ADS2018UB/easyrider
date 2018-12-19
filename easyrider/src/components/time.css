@@ -28,6 +28,15 @@
   width: 100%;
 }
 
+.indicator {
+  margin: 10px 0px;
+  padding: 5px;
+  font-size: 1.25em;
+  font-weight: bold;
+  width: 90%;
+  height: 100%;
+}
+
 
 .ant-slider-rail {
 	height: 30px;
