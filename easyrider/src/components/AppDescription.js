@@ -10,6 +10,10 @@ const AppDescription = () => (
       Using historical data, Easyrider predicts availability and spaces every
       day for all stations on a 10 min basis.
     </p>
+    <p>
+      Use the search field if you want to look up a station by its name or by
+      its ID.
+    </p>
   </div>
 );
 
