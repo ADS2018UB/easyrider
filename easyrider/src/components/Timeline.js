@@ -28,6 +28,13 @@ class Timeline extends Component {
 
     const minuteStep = 10;
     const defSliderNum = 60 * date.hour() + date.minute();
+    const marks = {
+      5: "00:05",
+      365: "06:05",
+      725: "12:05",
+      1085: "18:05",
+      1435: "23:55"
+    };
 
     return (
       <div>
@@ -35,6 +42,7 @@ class Timeline extends Component {
           id="time_slider"
           included={false}
           step={minuteStep}
+          marks={marks}
           defaultValue={defSliderNum}
           tipFormatter={this.formatter}
           min={5}

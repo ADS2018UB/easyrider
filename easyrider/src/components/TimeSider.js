@@ -23,7 +23,7 @@ class TimeSider extends Component {
     const prediction = date >= moment("2018-10-01 00:05");
 
     return (
-      <div id="time_select">
+      <div id="date_select">
         {prediction ? (
           <Tag className="indicator" color="gold">
             PREDICTION

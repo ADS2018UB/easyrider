@@ -1,6 +1,6 @@
 @import "~antd/dist/antd.css";
 
-#time_select {
+#date_select {
 	margin: 12px 0px;
 	position: absolute;
 	bottom: 0;
