@@ -73,6 +73,9 @@ class Map extends React.Component {
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 0);
   };
 
   /**
@@ -122,9 +125,6 @@ class Map extends React.Component {
           const marker = x.target;
           marker.unbindPopup();
         });
-      if (station.station_id === 2) {
-        console.log(marker);
-      }
     });
   };
 
