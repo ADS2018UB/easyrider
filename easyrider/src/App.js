@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Provider, Subscribe } from "unstated";
-import { Layout, Spin, Icon } from "antd";
+import { Layout, Spin } from "antd";
 
 // eslint-disable-next-line no-unused-vars
 import UNSTATED from "unstated-debug";
@@ -17,8 +17,6 @@ import Legend from "./components/Legend";
 import "./App.css";
 
 const { Footer, Sider, Content } = Layout;
-
-// const spinIcon = <Icon type="loading" style={{ fontSize: 28 }} spin />;
 
 class App extends Component {
   render() {

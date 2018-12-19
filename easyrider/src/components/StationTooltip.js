@@ -1,11 +1,15 @@
 import * as d3 from "d3";
+import _ from "lodash";
 
 /**
  * Creates the tooltip content of an specific station.
  * @param {station} station whose tooltip is going to be generated.
  */
 export function getTooltipContent(station, date) {
-  const data = station.trend;
+  const data = _.map(station.trend, Math.floor);
+  if (station.station_id === 248) {
+    console.log(data);
+  }
 
   const margin = { left: 40, right: 20, top: 20, bottom: 30 };
   const width = 300 - margin.left - margin.right;
