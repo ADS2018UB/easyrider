@@ -17,7 +17,7 @@ import "./App.css";
 
 const { Footer, Sider, Content } = Layout;
 
-const spinIcon = <Icon type="loading" style={{ fontSize: 48 }} spin />;
+// const spinIcon = <Icon type="loading" style={{ fontSize: 28 }} spin />;
 
 class App extends Component {
   render() {
@@ -41,8 +41,8 @@ class App extends Component {
                   <Searchbar mapStore={mapStore} />
                   <Spin
                     id="spinner"
-                    size="large"
-                    indicator={spinIcon}
+                    // size="large"
+                    // indicator={spinIcon}
                     spinning={mapStore.state.isFetching}
                   />
                   <TimeSider mapStore={mapStore} />
