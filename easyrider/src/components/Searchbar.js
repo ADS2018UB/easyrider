@@ -8,7 +8,7 @@ class Searchbar extends Component {
   state = { stationName: null };
 
   onChange(text) {
-    if (!selected) {
+    if (!selected && text !== "") {
       this.setState({ stationName: parseInt(+text) });
     } else {
       selected = false;
