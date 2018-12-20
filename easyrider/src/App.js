@@ -10,6 +10,9 @@ import MapContainer from "./containers/MapContainer";
 import TimeSider from "./components/TimeSider";
 import Timeline from "./components/Timeline";
 import Searchbar from "./components/Searchbar";
+import Logo from "./components/Logo";
+import AppDescription from "./components/AppDescription";
+import Legend from "./components/Legend";
 
 import "./App.css";
 
@@ -31,9 +34,17 @@ class App extends Component {
                     <Timeline mapStore={mapStore} />
                   </Footer>
                 </Layout>
-                <Sider width="225" theme="light">
+                <Sider id="sider" width="225" theme="light">
+                  <Logo />
+                  <AppDescription />
                   <Searchbar mapStore={mapStore} />
-                  <Spin spinning={mapStore.state.isFetching} />
+                  <Legend />
+                  <Spin
+                    id="spinner"
+                    // size="large"
+                    // indicator={spinIcon}
+                    spinning={mapStore.state.isFetching}
+                  />
                   <TimeSider mapStore={mapStore} />
                 </Sider>
               </Layout>

@@ -21,7 +21,36 @@ body {
   height: 100%;
 }
 
+#sider {
+  padding: 10px;
+}
+
+.ant-layout-footer {
+  padding: 10px 25px 10px 40px;
+}
+
+#logo-container {
+  text-align: center;
+}
+
 #searchbar {
   width: 100%;
-  margin-top: 20px;
+  margin-bottom: 3%;
+}
+
+#spinner {
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+#app-description {
+  text-align: justify;
+}
+
+#app-description p {
+  margin-bottom: 0.5em;
+}
+
+#legend {
+  text-align: justify;
 }

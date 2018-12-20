@@ -1,8 +1,8 @@
 import React from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import * as d3 from "d3";
 import _ from "lodash";
+import { getTooltipContent } from "./StationTooltip";
 
 // Fixing markers location (webpack)
 delete L.Icon.Default.prototype._getIconUrl;
@@ -73,6 +73,9 @@ class Map extends React.Component {
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 0);
   };
 
   /**
@@ -82,159 +85,47 @@ class Map extends React.Component {
     _.forEach(this.stationMarkers, m => this.map.removeLayer(m));
 
   /**
-   * Creates the tooltip content of an specific station.
-   * @param {station} station whose tooltip is going to be generated.
-   */
-  getTooltipContent = (station, date) => {
-    const data = station.trend;
-
-    const width = 250;
-    const height = 60;
-
-    const margin = { left: 20, right: 0, top: 20, bottom: 30 };
-
-    const div = d3.create("div");
-
-    div
-      .append("text")
-      .text("Adress: ")
-      .append("text")
-      .style("font-weight", "bold")
-      .text(station.name);
-    div.append("br");
-    div
-      .append("text")
-      .text("ID: ")
-      .append("text")
-      .style("font-weight", "bold")
-      .text(station.id);
-    div.append("br");
-    div
-      .append("text")
-      .text("Bikes: ")
-      .append("text")
-      .style("font-weight", "bold")
-      .text(station.current_bikes);
-    div.append("br");
-    div
-      .append("text")
-      .text("Empty slots: ")
-      .append("text")
-      .style("font-weight", "bold")
-      .text(station.capacity - station.current_bikes);
-    div.append("br");
-    div.append("br");
-    div
-      .append("text")
-      .text("PLAN YOUR TRIP: ")
-      .append("hr");
-    div
-      .append("text")
-      .text("Date: ")
-      .append("text")
-      .style("font-weight", "bold")
-      .text(date.format("DD-MM-YYYY"));
-    div.append("br");
-    div
-      .append("text")
-      .text("Week day: ")
-      .append("text")
-      .style("font-weight", "bold")
-      .text(date.format("dddd"));
-
-    var svg = div
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom);
-
-    var g = svg
-      .append("g")
-      .attr("transform", "translate(" + [margin.left, margin.top] + ")");
-
-    var y = d3
-      .scaleLinear()
-      .domain([
-        0,
-        d3.max(data, function(d) {
-          return d;
-        })
-      ])
-      .range([height, 0]);
-
-    var yAxis = d3
-      .axisLeft()
-      .ticks(4)
-      .scale(y);
-    g.append("g").call(yAxis);
-
-    var x = d3
-      .scaleBand()
-      .domain(d3.range(data.length))
-      .range([0, width]);
-
-    var xAxis = d3
-      .axisBottom()
-      .scale(x)
-      .tickFormat(function(d) {
-        return d + 1;
-      });
-
-    g.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-      .selectAll("text");
-
-    g.selectAll("rect")
-      .data(data)
-      .enter()
-      .append("rect")
-      .attr("y", height)
-      .attr("height", 0)
-      .attr("width", x.bandwidth() - 2)
-      .attr("x", function(d, i) {
-        return x(i);
-      })
-      .attr("fill", "steelblue")
-      .transition()
-      .attr("height", function(d) {
-        return height - y(d);
-      })
-      .attr("y", function(d) {
-        return y(d);
-      })
-      .duration(1000);
-    /*
-    var title = svg
-      .append("text")
-      .style("font-size", "20px")
-      .text(feature.properties.title)
-      .attr("x", width / 2 + margin.left)
-      .attr("y", 30)
-      .attr("text-anchor", "middle");
-*/
-    return div.node();
-  };
-
-  /**
    * Updates the station information given a ser of station data objects.
    * @param {list of station objects} stations List of the station objects returned by the backend.
    */
   updateStations = (stations, date) => {
-    // First, remove all the current markers.
-    this.removeAllStations();
-    // Setting the station markers and the tooltips.
-    this.stationMarkers = _.chain(stations)
-      .keyBy("id")
-      .mapValues(station => {
-        const icon = selectIcon(station.current_bikes, station.capacity);
-        const marker = L.marker([station.lat, station.lng], { icon }).addTo(
-          this.map
-        );
-
-        marker.bindPopup(this.getTooltipContent(station, date));
-        return marker;
-      })
-      .value();
+    _.forEach(stations, station => {
+      const icon = selectIcon(station.current_bikes, station.total_docks);
+      let marker = this.stationMarkers[station.station_id];
+      if (marker) {
+        marker.setIcon(icon);
+        if (marker.isPopupOpen()) {
+          this.props.mapStore
+            .fetchStation(marker.properties.station_id)
+            .then(remote_station => {
+              const content = getTooltipContent(remote_station, date);
+              marker.setPopupContent(content);
+            });
+        } else {
+          marker.setPopupContent("");
+        }
+      } else {
+        marker = L.marker([station.latitude, station.longitude], { icon });
+        marker.addTo(this.map);
+        marker.properties = { station_id: station.station_id };
+        this.stationMarkers[station.station_id] = marker;
+      }
+      if (marker._events.click) marker._events.click = [];
+      marker
+        .on("click", x => {
+          const marker = x.target;
+          this.props.mapStore
+            .fetchStation(marker.properties.station_id)
+            .then(remote_station => {
+              marker.bindPopup(getTooltipContent(remote_station, date));
+              marker.openPopup();
+            });
+        })
+        .on("popupclose", x => {
+          const marker = x.target;
+          marker.unbindPopup();
+        });
+    });
   };
 
   /**
@@ -265,9 +156,9 @@ class Map extends React.Component {
   };
 
   openTooltip = () => {
-    const selectedId = this.props.mapStore.state.selected.id;
+    const selectedId = this.props.mapStore.state.selected.station_id;
     if (selectedId) {
-      this.stationMarkers[selectedId].openPopup();
+      this.stationMarkers[selectedId].fire("click");
     }
   };
 

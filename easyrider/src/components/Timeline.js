@@ -1,15 +1,15 @@
 import React, { Component } from "react";
-import { Slider } from "antd";
+import { Slider, TimePicker } from "antd";
 
 import "./time.css";
 
 class Timeline extends Component {
   formatter = value => {
     let res = value % 60;
-    const minute = res === 0 ? "00" : res;
+    const minute = res === 5 ? "05" : res;
 
     res = (value - minute) / 60;
-    const hour = res === 0 ? "00" : res;
+    const hour = res < 10 ? "0" + res : res;
 
     return hour + ":" + minute;
   };
@@ -21,8 +21,16 @@ class Timeline extends Component {
     const hour = (value - minute) / 60;
 
     this.props.mapStore.setDate(date.hour(hour).minute(minute));
+  };
 
-    //TODO: call here the endpoint to update the map
+  disabledMinutes = hour => {
+    const result = [];
+    for (let i = 0; i <= 59; i++) {
+      if ((i + 5) % 10 !== 0) {
+        result.push(i);
+      }
+    }
+    return result;
   };
 
   render() {
@@ -30,17 +38,34 @@ class Timeline extends Component {
 
     const minuteStep = 10;
     const defSliderNum = 60 * date.hour() + date.minute();
+    const format = "HH:mm";
+    const marks = {
+      5: "00:05",
+      365: "06:05",
+      725: "12:05",
+      1085: "18:05",
+      1435: "23:55"
+    };
 
     return (
-      <div>
+      <div id="time_select">
         <Slider
           id="time_slider"
           included={false}
           step={minuteStep}
+          marks={marks}
           defaultValue={defSliderNum}
           tipFormatter={this.formatter}
-          max={1430}
+          min={5}
+          max={1435}
           onAfterChange={this.onAfterChange.bind(this)}
+        />
+        <TimePicker
+          value={date}
+          format={format}
+          disabledMinutes={this.disabledMinutes}
+          hideDisabledOptions={true}
+          allowEmpty={false}
         />
       </div>
     );

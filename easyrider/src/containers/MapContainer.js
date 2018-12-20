@@ -19,11 +19,11 @@ export default class MapContainer extends Container {
     position: { x: 41.881, y: -87.623, z: 13 },
     selected: undefined,
     isFetching: false,
-    date: moment("2018-10-01 12:00")
+    date: moment("2018-10-01 12:05")
   };
 
   findStation = id =>
-    _.find(this.state.stations, s => parseInt(s.id) === parseInt(id));
+    _.find(this.state.stations, s => parseInt(s.station_id) === parseInt(id));
 
   setStations = stations => this.setState({ stations });
 
@@ -37,13 +37,22 @@ export default class MapContainer extends Container {
     this.setState({ stations, isFetching: false });
   };
 
-  startDate = () => {
-    this.setState({ date: moment("2018-10-01 12:00") });
+  fetchStation = async id => {
+    this.setState({ isFetching: true });
+    const data = await fetch(
+      `${API_URL}/stations/${id}/?date=${this.state.date}`
+    );
+    const station = await data.json();
+    this.setState({ isFetching: false });
+    return station;
   };
 
-  setDate = date => {
-    date.minute(((date.minute() / 10) >> 0) * 10);
-    this.setState({ date });
+  startDate = () => {
+    this.setDate(moment("2018-10-01 12:05"));
+  };
+
+  setDate = async date => {
+    await this.setState({ date });
     this.startRequest();
   };
 
@@ -59,7 +68,11 @@ export default class MapContainer extends Container {
   centerStation = async id => {
     const selected = this.findStation(id);
     if (selected) {
-      const position = { x: selected.lat, y: selected.lng, z: SELECTED_ZOOM };
+      const position = {
+        x: selected.latitude,
+        y: selected.longitude,
+        z: SELECTED_ZOOM
+      };
       await this.setState({ position, selected });
       this.map.setPos();
       this.map.openTooltip();
